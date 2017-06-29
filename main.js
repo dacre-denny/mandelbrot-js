@@ -4,10 +4,9 @@ var ctx = document.getElementById('mandelbrot').getContext('2d');
 
 
 const color = idx => {
-    //return 'rgba(1,1,0,1)'
     
     const frac = 2.0 * Math.PI * (idx / 255.0)
-//console.log((Math.sin(frac) + 1) * 255)
+    
     return `rgba(${
        parseInt((Math.cos(frac) + 1) * .5 * 255)
     },${
@@ -15,11 +14,9 @@ const color = idx => {
     },${
         parseInt((Math.sin(frac) + 1) * .5 * 255)
     }, 1)`
-    
-    //"rgba("+r+","+g+","+b+",1.0)"
 }
 
-var RES = 650.0
+var RES = 750.0
 
 for(var x = 0; x < RES; x++) { //-2; x < 2; x += 0.1) {
 
@@ -35,7 +32,7 @@ for(var x = 0; x < RES; x++) { //-2; x < 2; x += 0.1) {
         var isSet = false
         var i = 0
 
-        for(i = 0; i < 255; i+=3) {
+        for(i = 0; i < 255; i++) {
 
             var COMPx_new = COMPx*COMPx - COMPy * COMPy + cy
             var COMPy_new = 2.0 * COMPx * COMPy + cx

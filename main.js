@@ -18,9 +18,9 @@ const color = idx => {
 
 var RES = 750.0
 
-for(var x = 0; x < RES; x++) { //-2; x < 2; x += 0.1) {
+for(var x = 0; x < RES; x++) { 
 
-    for(var y = 0; y < RES; y++) { //-1; y < 1; y += 0.1) {
+    for(var y = 0; y < RES; y++) {
 
         var cx = ((y / RES) - 0.5) * 4;
         var cy = ((x / RES) - 0.5) * 4;

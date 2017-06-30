@@ -1,3 +1,3 @@
 # mandelbrot-js
 
-mandelbrot-js demo
+mandelbrot-js demo, read me.

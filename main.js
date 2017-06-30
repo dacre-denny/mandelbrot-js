@@ -15,7 +15,7 @@ const color = idx => {
     }, 1)`
 }
 
-var RES = 250.0
+var RES = 500.0
 var SCALE = 1
 var x_pos = 0
 var y_pos = 0

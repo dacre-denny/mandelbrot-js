@@ -44,7 +44,7 @@ const renderFrame = (context) => {
 
                 var zN = (COMPx_new + COMPy_new)
 
-                if (zN > 1) {
+                if (Math.abs(zN - z) > 15) {
                     isSet = true
                     break
                 }

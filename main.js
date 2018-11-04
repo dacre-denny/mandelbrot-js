@@ -27,8 +27,8 @@ const renderFrame = (context) => {
 
         for (var iy = 0; iy < RES; iy++) {
 
-            var cx = ((iy / RES) * 8) + -4;
-            var cy = ((ix / RES) * 8) + -4;
+            var cx = ((iy / RES) * 2) + -1;
+            var cy = ((ix / RES) * 2) + -1;
 
             var COMPx = 0
             var COMPy = 0
@@ -67,6 +67,16 @@ var x = 0
 
 const element = document.getElementById('mandelbrot');
 
+element.addEventListener('mousemove', event => {
+
+    const canvas = event.currentTarget
+
+    const fx = event.clientX / RES //event.target.width
+    const fy = event.clientY / RES //event.target.height
+
+    console.log(fx, fy)
+})
+
 element.onclick = event => {
 
     const fx = event.clientX / RES //event.target.width
@@ -92,6 +102,3 @@ const step = ts => {
 }
 
 window.requestAnimationFrame(step)
-
-console.log(color(255 * 0 * .25))
-console.log(Math.sin(0))

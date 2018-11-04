@@ -1,5 +1,5 @@
 import { hello } from './mandelbrot'
-
+import './src/styles.scss'
 
 const state = {
     x: 0,
@@ -25,7 +25,7 @@ var RES = 200.0
 const ITERATIONS = 100
 const INNER_IT = 255
 
-const renderFrame = (context) => {
+const renderMandlebrot = (context) => {
 
     for (var ix = 0; ix < RES; ix++) {
 
@@ -90,12 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderFrame = () => {
 
-        renderFrame(element.getContext('2d'))
+        renderMandlebrot(element.getContext('2d'))
 
         state.time = Date.now() / 1000.0
 
-        window.requestAnimationFrame(step)
+        window.requestAnimationFrame(renderFrame)
     }
 
-    window.requestAnimationFrame()
+    window.requestAnimationFrame(renderFrame)
 })

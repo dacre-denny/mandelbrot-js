@@ -21,21 +21,14 @@ var x_pos = 0
 var y_pos = 0
 const ITERATIONS = 255
 
-var gFrame = {
-    l: -2,
-    t: -2,
-    w: 4,
-    h: 4
-}
-
-const renderFrame = (context, frame) => {
+const renderFrame = (context) => {
 
     for (var ix = 0; ix < RES; ix++) {
 
         for (var iy = 0; iy < RES; iy++) {
 
-            var cx = ((iy / RES) * frame.h) + frame.t;
-            var cy = ((ix / RES) * frame.w) + frame.l;
+            var cx = ((iy / RES) * 8) + -4;
+            var cy = ((ix / RES) * 8) + -4;
 
             var COMPx = 0
             var COMPy = 0
@@ -51,7 +44,7 @@ const renderFrame = (context, frame) => {
 
                 var zN = (COMPx_new + COMPy_new)
 
-                if (zN > 2) {
+                if (zN > 1) {
                     isSet = true
                     break
                 }
@@ -79,10 +72,6 @@ element.onclick = event => {
     const fx = event.clientX / RES //event.target.width
     const fy = event.clientY / RES //event.target.height
 
-    gFrame.l = -fx
-    gFrame.t = -fy
-    gFrame.w = gFrame.w * 0.85
-    gFrame.h = gFrame.h * 0.85
 
     console.log(fx, fy)
 }
@@ -90,7 +79,7 @@ element.onclick = event => {
 const step = ts => {
 
     var ctx = element.getContext('2d');
-    renderFrame(ctx, gFrame)
+    renderFrame(ctx)
 
     SCALE = SCALE * 0.9
 

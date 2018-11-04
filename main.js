@@ -15,9 +15,10 @@ const color = idx => {
         }, 1)`
 }
 
-var RES = 500.0
+var RES = 200.0
 var SCALE = 1
 const ITERATIONS = 100
+const INNER_IT = 255
 
 const renderFrame = (context) => {
 
@@ -26,8 +27,8 @@ const renderFrame = (context) => {
         for (var iy = 0; iy < RES; iy++) {
 
             var zoom = 1 + state.z;
-            var cx = ((iy / RES) * zoom) - (0.5 * zoom + state.y);
-            var cy = ((ix / RES) * zoom) - (0.5 * zoom + state.x);
+            var cx = ((iy / RES) - 0.5 + state.y) * zoom;
+            var cy = ((ix / RES) - 0.5 + state.x) * zoom;
 
             var COMPx = 0
             var COMPy = 0
@@ -36,7 +37,7 @@ const renderFrame = (context) => {
             var isSet = false
             var i = 0
 
-            for (i = 0; i < 255; i += (255 / ITERATIONS)) {
+            for (i = 0; i < INNER_IT; i += (INNER_IT / ITERATIONS)) {
 
                 var COMPx_new = COMPx * COMPx - COMPy * COMPy + cy
                 var COMPy_new = 2.0 * COMPx * COMPy + cx
@@ -53,7 +54,7 @@ const renderFrame = (context) => {
                 z = zN
             }
 
-            context.fillStyle = isSet ? `rgba(255,255,255,1)` : 'rgba(0,0,0,1)' //color(i)
+            context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
             context.fillRect(ix, iy, 1, 1);
 
         }

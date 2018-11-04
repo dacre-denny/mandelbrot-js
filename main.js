@@ -67,28 +67,35 @@ const renderFrame = (context) => {
     }
 }
 
-const element = document.getElementById('mandelbrot');
 
-element.addEventListener('mousemove', event => {
 
-    const fx = event.clientX / RES //event.target.width
-    const fy = event.clientY / RES //event.target.height
+document.addEventListener('DOMContentLoaded', () => {
 
-    state.x = fx
-    state.y = fy
-})
+    const element = document.getElementById('mandelbrot');
 
-element.addEventListener('mousewheel', event => {
+    element.addEventListener('mousemove', event => {
 
-    state.z += (event.wheelDelta / 1000)
-    console.log(event)
-})
+        const fx = event.clientX / RES //event.target.width
+        const fy = event.clientY / RES //event.target.height
 
-window.requestAnimationFrame(() => {
+        state.x = fx
+        state.y = fy
+    })
 
-    renderFrame(element.getContext('2d'))
+    element.addEventListener('mousewheel', event => {
 
-    state.time = Date.now() / 1000.0
+        state.z += (event.wheelDelta / 1000)
+        console.log(event)
+    })
 
-    window.requestAnimationFrame(step)
+    const renderFrame = () => {
+
+        renderFrame(element.getContext('2d'))
+
+        state.time = Date.now() / 1000.0
+
+        window.requestAnimationFrame(step)
+    }
+
+    window.requestAnimationFrame()
 })

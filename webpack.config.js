@@ -21,7 +21,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin({
+      title: 'mandelbrot',
+      template: 'src/index.html'
+    })
   ],
   resolve: {
     extensions: ['.js']

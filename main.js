@@ -1,22 +1,27 @@
 import { hello } from './mandelbrot'
 
-var t = 0
+
+const state = {
+    x: 0,
+    y: 0,
+    z: 0,
+    time: Date.now()
+}
 
 const color = idx => {
 
     const frac = 2.0 * Math.PI * (idx / 255.0)
 
     return `rgba(${
-        parseInt((Math.cos(frac + t) + 1) * .5 * 255)
+        parseInt((Math.cos(frac + state.time) + 1) * .5 * 255)
         },${
-        parseInt((Math.sin(frac + t + Math.PI) + 1) * .5 * 255)
+        parseInt((Math.sin(frac + state.time + Math.PI) + 1) * .5 * 255)
         },${
-        parseInt((Math.sin(frac + t) + 1) * .5 * 255)
+        parseInt((Math.sin(frac + state.time) + 1) * .5 * 255)
         }, 1)`
 }
 
 var RES = 200.0
-var SCALE = 1
 const ITERATIONS = 100
 const INNER_IT = 255
 
@@ -73,31 +78,17 @@ element.addEventListener('mousemove', event => {
     state.y = fy
 })
 
-const state = {
-    x: 0,
-    y: 0,
-    z: 0
-}
-
 element.addEventListener('mousewheel', event => {
 
     state.z += (event.wheelDelta / 1000)
     console.log(event)
 })
 
-const step = ts => {
+window.requestAnimationFrame(() => {
 
-    var ctx = element.getContext('2d');
-    renderFrame(ctx)
+    renderFrame(element.getContext('2d'))
 
-    SCALE = SCALE * 0.9
+    state.time = Date.now() / 1000.0
 
-    t += 0.1
-
-    setTimeout(() => {
-        window.requestAnimationFrame(step)
-
-    }, 5)
-}
-
-window.requestAnimationFrame(step)
+    window.requestAnimationFrame(step)
+})

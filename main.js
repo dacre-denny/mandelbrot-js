@@ -30,26 +30,12 @@ var gFrame = {
 
 const renderFrame = (context, frame) => {
 
-    // for(var ix = 0; ix < RES; ix++) { 
-
-    //     for(var iy = 0; iy < RES; iy++) {
-
-    //         var cx = ((iy / RES) - 0.5) * 4;
-    //         var cy = ((ix / RES) - 0.5) * 4;
     for (var ix = 0; ix < RES; ix++) {
 
         for (var iy = 0; iy < RES; iy++) {
 
             var cx = ((iy / RES) * frame.h) + frame.t;
             var cy = ((ix / RES) * frame.w) + frame.l;
-
-            // cx = ((iy / RES) - 0.5) * 4;
-            // cy = ((ix / RES) - 0.5) * 4;
-            //console.log(cx)
-            // cx *= scale;
-            // cy *= scale;
-            // cy -= tx;
-
 
             var COMPx = 0
             var COMPy = 0
@@ -75,12 +61,6 @@ const renderFrame = (context, frame) => {
                 z = zN
             }
 
-
-            var r = 0
-            var g = 0
-            var b = isSet ? Math.min(i, 255) : 0
-
-            //ctx.fillStyle = 'rgba(' + r + ',' + b + ',' + g + ',1)' //isSet ? color(i) : 'rgba(0,0,0,0)'
             context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
             context.fillRect(ix, iy, 1, 1);
 

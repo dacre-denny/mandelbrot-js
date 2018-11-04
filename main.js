@@ -17,9 +17,7 @@ const color = idx => {
 
 var RES = 500.0
 var SCALE = 1
-var x_pos = 0
-var y_pos = 0
-const ITERATIONS = 255
+const ITERATIONS = 100
 
 const renderFrame = (context) => {
 
@@ -27,8 +25,9 @@ const renderFrame = (context) => {
 
         for (var iy = 0; iy < RES; iy++) {
 
-            var cx = ((iy / RES) * 2) + -1;
-            var cy = ((ix / RES) * 2) + -1;
+            var zoom = 1 + state.z;
+            var cx = ((iy / RES) * zoom) - (0.5 * zoom + state.y);
+            var cy = ((ix / RES) * zoom) - (0.5 * zoom + state.x);
 
             var COMPx = 0
             var COMPy = 0
@@ -54,37 +53,36 @@ const renderFrame = (context) => {
                 z = zN
             }
 
-            context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
+            context.fillStyle = isSet ? `rgba(255,255,255,1)` : 'rgba(0,0,0,1)' //color(i)
             context.fillRect(ix, iy, 1, 1);
 
         }
 
     }
-    console.log('done')
 }
-
-var x = 0
 
 const element = document.getElementById('mandelbrot');
 
 element.addEventListener('mousemove', event => {
 
-    const canvas = event.currentTarget
-
     const fx = event.clientX / RES //event.target.width
     const fy = event.clientY / RES //event.target.height
 
-    console.log(fx, fy)
+    state.x = fx
+    state.y = fy
 })
 
-element.onclick = event => {
-
-    const fx = event.clientX / RES //event.target.width
-    const fy = event.clientY / RES //event.target.height
-
-
-    console.log(fx, fy)
+const state = {
+    x: 0,
+    y: 0,
+    z: 0
 }
+
+element.addEventListener('mousewheel', event => {
+
+    state.z += (event.wheelDelta / 1000)
+    console.log(event)
+})
 
 const step = ts => {
 
@@ -93,7 +91,7 @@ const step = ts => {
 
     SCALE = SCALE * 0.9
 
-    t += 0.01
+    t += 0.1
 
     setTimeout(() => {
         window.requestAnimationFrame(step)

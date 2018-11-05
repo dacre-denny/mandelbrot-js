@@ -21,7 +21,7 @@ const color = idx => {
         }, 1)`
 }
 
-var RES = 200.0
+var RES = 100.0
 const ITERATIONS = 100
 const INNER_IT = 255
 
@@ -32,8 +32,8 @@ const renderMandlebrot = (context) => {
         for (var iy = 0; iy < RES; iy++) {
 
             var zoom = 1 + state.z;
-            var cx = ((iy / RES) - 0.5 + state.y) * zoom;
-            var cy = ((ix / RES) - 0.5 + state.x) * zoom;
+            var cx = ((iy / RES) - 0.5 + state.y);// * zoom;
+            var cy = ((ix / RES) - 0.5 + state.x);// * zoom;
 
             var COMPx = 0
             var COMPy = 0
@@ -61,25 +61,26 @@ const renderMandlebrot = (context) => {
 
             context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
             context.fillRect(ix, iy, 1, 1);
-
         }
-
     }
 }
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
 
     const element = document.getElementById('mandelbrot');
 
+    element.width = RES
+    element.height = RES
+
     element.addEventListener('mousemove', event => {
 
-        const fx = event.clientX / RES //event.target.width
-        const fy = event.clientY / RES //event.target.height
+        const fx = (event.clientX / document.body.clientWidth)
+        const fy = (event.clientY / document.body.clientHeight)
 
-        state.x = fx
-        state.y = fy
+        state.x = -fx;
+        state.y = -fy;
+
+        console.log(state)
     })
 
     element.addEventListener('mousewheel', event => {

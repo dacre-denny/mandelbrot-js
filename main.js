@@ -4,13 +4,13 @@ import './src/styles.scss'
 const state = {
     x: 0,
     y: 0,
-    z: 0,
+    z: 2,
     time: Date.now()
 }
 
 const color = idx => {
 
-    const frac = 2.0 * Math.PI * (idx / 255.0)
+    const frac = 2.0 * Math.PI * (idx)
 
     return `rgba(${
         parseInt((Math.cos(frac + state.time) + 1) * .5 * 255)
@@ -23,17 +23,16 @@ const color = idx => {
 
 var RES = 100.0
 const ITERATIONS = 100
-const INNER_IT = 255
 
 const renderMandlebrot = (context) => {
 
-    for (var ix = 0; ix < RES; ix++) {
+    for (var ix = 0; ix < context.canvas.width; ix++) {
 
-        for (var iy = 0; iy < RES; iy++) {
+        for (var iy = 0; iy < context.canvas.height; iy++) {
 
-            var zoom = 1 + state.z;
-            var cx = ((iy / RES) - 0.5 + state.y);// * zoom;
-            var cy = ((ix / RES) - 0.5 + state.x);// * zoom;
+            var zoom = state.z;
+            var cx = ((iy / RES) - 0.5 + state.y) * zoom;
+            var cy = ((ix / RES) - 0.5 + state.x) * zoom;
 
             var COMPx = 0
             var COMPy = 0
@@ -42,7 +41,7 @@ const renderMandlebrot = (context) => {
             var isSet = false
             var i = 0
 
-            for (i = 0; i < INNER_IT; i += (INNER_IT / ITERATIONS)) {
+            for (i = 0; i < 1; i += (1 / ITERATIONS)) {
 
                 var COMPx_new = COMPx * COMPx - COMPy * COMPy + cy
                 var COMPy_new = 2.0 * COMPx * COMPy + cx
@@ -60,6 +59,14 @@ const renderMandlebrot = (context) => {
             }
 
             context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
+
+            if (cx > 0.45 && cx < 0.55) {
+                context.fillStyle = 'rgba(255,0,0,1)'
+            }
+            if (cy > 0.45 && cy < 0.55) {
+                context.fillStyle = 'rgba(255,0,0,1)'
+            }
+
             context.fillRect(ix, iy, 1, 1);
         }
     }
@@ -67,25 +74,34 @@ const renderMandlebrot = (context) => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const element = document.getElementById('mandelbrot');
+    // document.addEventListener('resize', () => {
 
-    element.width = RES
+    // })
+
+    const element = document.getElementById('mandelbrot');
+    const ratio = document.body.clientWidth / document.body.clientHeight
+
+    element.width = RES * ratio
     element.height = RES
 
     element.addEventListener('mousemove', event => {
 
-        const fx = (event.clientX / document.body.clientWidth)
-        const fy = (event.clientY / document.body.clientHeight)
+        if (event.buttons > 0) {
 
-        state.x = -fx;
-        state.y = -fy;
+            const dx = (event.movementX / document.body.clientWidth)
+            const dy = (event.movementY / document.body.clientHeight)
 
-        console.log(state)
+            state.x += -state.z * dx
+            state.y += -state.z * dy
+        }
     })
 
     element.addEventListener('mousewheel', event => {
 
-        state.z += (event.wheelDelta / 1000)
+        const fx = (event.clientX / document.body.clientWidth)
+        const fy = (event.clientY / document.body.clientHeight)
+
+        state.z += -event.wheelDelta / 1000
         console.log(event)
     })
 

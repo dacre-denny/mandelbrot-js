@@ -31,8 +31,8 @@ const renderMandlebrot = (context) => {
         for (var iy = 0; iy < context.canvas.height; iy++) {
 
             var zoom = state.z;
-            var cx = ((iy / RES) - 0.5 + state.y) * zoom;
-            var cy = ((ix / RES) - 0.5 + state.x) * zoom;
+            var cx = (((iy / RES) - 0.5) + state.y) * zoom;
+            var cy = (((ix / RES) - 0.5) + state.x) * zoom;
 
             var COMPx = 0
             var COMPy = 0
@@ -60,12 +60,12 @@ const renderMandlebrot = (context) => {
 
             context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
 
-            if (cx > 0.45 && cx < 0.55) {
-                context.fillStyle = 'rgba(255,0,0,1)'
-            }
-            if (cy > 0.45 && cy < 0.55) {
-                context.fillStyle = 'rgba(255,0,0,1)'
-            }
+            // if (cx > 0.45 && cx < 0.55) {
+            //     context.fillStyle = 'rgba(255,0,0,1)'
+            // }
+            // if (cy > 0.45 && cy < 0.55) {
+            //     context.fillStyle = 'rgba(255,0,0,1)'
+            // }
 
             context.fillRect(ix, iy, 1, 1);
         }
@@ -91,18 +91,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const dx = (event.movementX / document.body.clientWidth)
             const dy = (event.movementY / document.body.clientHeight)
 
-            state.x += -state.z * dx
-            state.y += -state.z * dy
+            state.x += dx
+            state.y += dy
         }
     })
 
     element.addEventListener('mousewheel', event => {
 
-        const fx = (event.clientX / document.body.clientWidth)
-        const fy = (event.clientY / document.body.clientHeight)
+        if (event.wheelDeltaY > 0) {
 
-        state.z += -event.wheelDelta / 1000
-        console.log(event)
+            state.z *= (1.0 / 0.9)
+        }
+        else {
+
+            state.z *= 0.9
+        }
+
+        console.log(state.z)
     })
 
     const renderFrame = () => {

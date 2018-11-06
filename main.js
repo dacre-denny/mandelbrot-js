@@ -2,6 +2,8 @@ import { hello } from './mandelbrot'
 import './src/styles.scss'
 
 const state = {
+    cx: 0,
+    cy: 0,
     x: 0,
     y: 0,
     z: 0.01,
@@ -26,17 +28,24 @@ const ITERATIONS = 100
 
 const renderMandlebrot = (context) => {
 
-    const hw = context.canvas.width / 2
-    const hh = context.canvas.height / 2
+    const hw = context.canvas.width / 8
+    const hh = context.canvas.height / 8
 
     for (var ix = 0; ix < context.canvas.width; ix++) {
 
         for (var iy = 0; iy < context.canvas.height; iy++) {
 
-            var zoom = state.z;
+            const fx = ix / context.canvas.width
+            const fy = iy / context.canvas.height
 
-            const x = ((ix - hw)) * zoom
-            const y = ((iy - hh)) * zoom
+            const ox = state.cx
+            const oy = state.cy
+
+            var zoom = state.z;
+            // const x = state.x + fx;// + ((fx - state.cx)) * zoom
+            // const y = state.y + fy;// + ((fy - state.cy)) * zoom
+            const x = ((ix - ox)) * zoom
+            const y = ((iy - oy)) * zoom
 
             var cx = (x)
             var cy = (y)
@@ -107,6 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     element.addEventListener('mousewheel', event => {
 
+        state.cx = RES * ratio * (event.clientX / document.body.clientWidth)
+        state.cy = RES * (event.clientY / document.body.clientHeight)
+
         if (event.wheelDeltaY > 0) {
 
             state.z *= (1.0 / 0.9)
@@ -115,8 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             state.z *= 0.9
         }
-
-        console.log(state.z)
     })
 
     const renderFrame = () => {

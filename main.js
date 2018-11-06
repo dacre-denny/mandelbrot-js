@@ -2,11 +2,19 @@ import { hello } from './mandelbrot'
 import './src/styles.scss'
 
 const state = {
-    cx: 0,
-    cy: 0,
-    x: 0,
-    y: 0,
-    z: 0.01,
+    // cx: 0,
+    // cy: 0,
+    // x: 0,
+    // y: 0,
+    // z: 0.01,
+
+    cx: 284.0085287846482,
+    cy: 129.63752665245204,
+    time: 1541499294.347,
+    x: -0.15404922457300346,
+    y: -0.7887975283829556,
+    z: 0.00004174557917929365,
+
     time: Date.now()
 }
 
@@ -23,29 +31,25 @@ const color = idx => {
         }, 1)`
 }
 
-var RES = 100.0
+var RES = 200.0
 const ITERATIONS = 100
 
 const renderMandlebrot = (context) => {
 
-    const hw = context.canvas.width / 8
-    const hh = context.canvas.height / 8
+    console.log(state)
 
     for (var ix = 0; ix < context.canvas.width; ix++) {
 
         for (var iy = 0; iy < context.canvas.height; iy++) {
 
-            const fx = ix / context.canvas.width
-            const fy = iy / context.canvas.height
-
             const ox = state.cx
             const oy = state.cy
 
+
+
             var zoom = state.z;
-            // const x = state.x + fx;// + ((fx - state.cx)) * zoom
-            // const y = state.y + fy;// + ((fy - state.cy)) * zoom
-            const x = ((ix - ox)) * zoom
-            const y = ((iy - oy)) * zoom
+            let x = (((ix) - ox) * zoom) + state.x
+            let y = (((iy) - oy) * zoom) + state.y
 
             var cx = (x)
             var cy = (y)
@@ -106,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (event.buttons > 0) {
 
-            const dx = (event.movementX / document.body.clientWidth)
-            const dy = (event.movementY / document.body.clientHeight)
+            const dx = (event.movementX / document.body.clientWidth) * state.z * RES
+            const dy = (event.movementY / document.body.clientHeight) * state.z * RES
 
             state.x -= dx
             state.y -= dy

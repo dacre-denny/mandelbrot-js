@@ -4,7 +4,7 @@ import './src/styles.scss'
 const state = {
     x: 0,
     y: 0,
-    z: 2,
+    z: 0.01,
     time: Date.now()
 }
 
@@ -26,13 +26,20 @@ const ITERATIONS = 100
 
 const renderMandlebrot = (context) => {
 
+    const hw = context.canvas.width / 2
+    const hh = context.canvas.height / 2
+
     for (var ix = 0; ix < context.canvas.width; ix++) {
 
         for (var iy = 0; iy < context.canvas.height; iy++) {
 
             var zoom = state.z;
-            var cx = (((iy / RES) - 0.5) + state.y) * zoom;
-            var cy = (((ix / RES) - 0.5) + state.x) * zoom;
+
+            const x = ((ix - hw)) * zoom
+            const y = ((iy - hh)) * zoom
+
+            var cx = (x)
+            var cy = (y)
 
             var COMPx = 0
             var COMPy = 0
@@ -60,12 +67,14 @@ const renderMandlebrot = (context) => {
 
             context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
 
-            // if (cx > 0.45 && cx < 0.55) {
-            //     context.fillStyle = 'rgba(255,0,0,1)'
-            // }
-            // if (cy > 0.45 && cy < 0.55) {
-            //     context.fillStyle = 'rgba(255,0,0,1)'
-            // }
+
+
+            if (x > -0.015 && x < 0.015) {
+                context.fillStyle = 'rgba(255,0,0,1)'
+            }
+            if (y > -0.015 && y < 0.015) {
+                context.fillStyle = 'rgba(255,0,0,1)'
+            }
 
             context.fillRect(ix, iy, 1, 1);
         }
@@ -91,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const dx = (event.movementX / document.body.clientWidth)
             const dy = (event.movementY / document.body.clientHeight)
 
-            state.x += dx
-            state.y += dy
+            state.x -= dx
+            state.y -= dy
         }
     })
 

@@ -2,8 +2,6 @@ import { hello } from './mandelbrot'
 import './src/styles.scss'
 
 const state = {
-    cx: 0,
-    cy: 0,
     tx: 0.5,
     ty: 0.5,
     z: 1.0,
@@ -25,23 +23,37 @@ const state = {
     time: Date.now()
 }
 
-const zoomToFrac = (x, y, scale) => {
+const lerp = (a, b, t) => {
 
-    const domain = state.domain
+    return (b - a) * t + a
+}
+
+const zoomToFrac = (domain, x, y, scale) => {
 
     const w = domain.right - domain.left
     const h = domain.bottom - domain.top
 
-    const ow = (w * x)
-    const oh = (h * y)
+    const ow = (w * x) * 0.5
+    const oh = (h * y) * 0.5
 
-    domain.left = ((domain.left - ow) * scale) + ow
-    domain.right = ((domain.right - ow) * scale) + ow
+    const tx = lerp(domain.left, domain.right, x)
+    const ty = lerp(domain.top, domain.bottom, y)
 
-    domain.top = ((domain.top - oh) * scale) + oh
-    domain.bottom = ((domain.bottom - oh) * scale) + oh
 
-    console.log('scale', scale)
+    const left = lerp(domain.left, tx, scale)
+    const right = lerp(domain.right, tx, scale)
+    const top = lerp(domain.top, ty, scale)
+    const bottom = lerp(domain.bottom, ty, scale)
+
+    console.log('from', domain.left, 'to', left)
+
+    return {
+        left,
+        right,
+        top,
+        bottom
+    }
+    //return domain
 }
 
 const color = idx => {
@@ -153,15 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const x = event.clientX / event.currentTarget.width
         const y = event.clientY / event.currentTarget.height
 
-        if (event.wheelDeltaY < 0) {
-            state.z += 0.1
+        if (event.wheelDeltaY > 0) {
+            state.domain = zoomToFrac(state.domain, x, y, 0.25)
         }
         else {
+            state.domain = zoomToFrac(state.domain, x, y, 1.25)
 
-            state.z -= 0.1
         }
 
-        zoomToFrac(x, y, state.z)
     })
 
     element.addEventListener('contextmenu', event => event.preventDefault())

@@ -2,18 +2,18 @@ import { hello } from './mandelbrot'
 import './src/styles.scss'
 
 const state = {
-    // cx: 0,
-    // cy: 0,
-    // x: 0,
-    // y: 0,
-    // z: 0.01,
+    cx: 0.5,
+    cy: 0.5,
+    tx: 0.5,
+    ty: 0.5,
+    z: 1.0,
 
-    cx: 284.0085287846482,
-    cy: 129.63752665245204,
-    time: 1541499294.347,
-    x: -0.15404922457300346,
-    y: -0.7887975283829556,
-    z: 0.00004174557917929365,
+    // cx: 284.0085287846482,
+    // cy: 129.63752665245204,
+    // time: 1541499294.347,
+    // x: -0.15404922457300346,
+    // y: -0.7887975283829556,
+    // z: 0.00004174557917929365,
 
     time: Date.now()
 }
@@ -31,28 +31,29 @@ const color = idx => {
         }, 1)`
 }
 
-var RES = 200.0
-const ITERATIONS = 100
+var RES = 250.0
+const ITERATIONS = 10
 
 const renderMandlebrot = (context) => {
 
-    console.log(state)
+    const tx = state.tx * context.canvas.width
+    const ty = state.ty * context.canvas.height
+
+    const cx = state.cx * context.canvas.width
+    const cy = state.cy * context.canvas.height
+
+    var zoom = state.z;
+    console.log(tx, ty, zoom)
 
     for (var ix = 0; ix < context.canvas.width; ix++) {
 
         for (var iy = 0; iy < context.canvas.height; iy++) {
 
-            const ox = state.cx
-            const oy = state.cy
+            let sx = ((ix - cx) * zoom) + cx - (tx)
+            let sy = ((iy - cy) * zoom) + cy - (ty)
 
-
-
-            var zoom = state.z;
-            let x = (((ix) - ox) * zoom) + state.x
-            let y = (((iy) - oy) * zoom) + state.y
-
-            var cx = (x)
-            var cy = (y)
+            let x = ((sx))
+            let y = ((sy))
 
             var COMPx = 0
             var COMPy = 0
@@ -63,8 +64,8 @@ const renderMandlebrot = (context) => {
 
             for (i = 0; i < 1; i += (1 / ITERATIONS)) {
 
-                var COMPx_new = COMPx * COMPx - COMPy * COMPy + cy
-                var COMPy_new = 2.0 * COMPx * COMPy + cx
+                var COMPx_new = COMPx * COMPx - COMPy * COMPy + y
+                var COMPy_new = 2.0 * COMPx * COMPy + x
 
                 var zN = (COMPx_new + COMPy_new)
 
@@ -82,10 +83,10 @@ const renderMandlebrot = (context) => {
 
 
 
-            if (x > -0.015 && x < 0.015) {
+            if (ix > cx - 2 && ix < cx + 2) {
                 context.fillStyle = 'rgba(255,0,0,1)'
             }
-            if (y > -0.015 && y < 0.015) {
+            if (iy > cy - 2 && iy < cy + 2) {
                 context.fillStyle = 'rgba(255,0,0,1)'
             }
 
@@ -103,35 +104,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const element = document.getElementById('mandelbrot');
     const ratio = document.body.clientWidth / document.body.clientHeight
 
-    element.width = RES * ratio
+    element.width = RES
     element.height = RES
 
     element.addEventListener('mousemove', event => {
 
         if (event.buttons > 0) {
 
-            const dx = (event.movementX / document.body.clientWidth) * state.z * RES
-            const dy = (event.movementY / document.body.clientHeight) * state.z * RES
-
-            state.x -= dx
-            state.y -= dy
+            state.tx = event.clientX / event.currentTarget.width
+            state.ty = event.clientY / event.currentTarget.height
         }
+        state.cx = event.clientX / event.currentTarget.width
+        state.cy = event.clientY / event.currentTarget.height
     })
 
     element.addEventListener('mousewheel', event => {
 
-        state.cx = RES * ratio * (event.clientX / document.body.clientWidth)
-        state.cy = RES * (event.clientY / document.body.clientHeight)
 
-        if (event.wheelDeltaY > 0) {
-
-            state.z *= (1.0 / 0.9)
+        if (event.wheelDeltaY < 0) {
+            state.z *= (1.0 / 0.7)
         }
         else {
 
-            state.z *= 0.9
+            state.z *= 0.7
         }
     })
+
+    element.addEventListener('contextmenu', event => event.preventDefault())
 
     const renderFrame = () => {
 

@@ -2,11 +2,18 @@ import { hello } from './mandelbrot'
 import './src/styles.scss'
 
 const state = {
-    cx: 0.5,
-    cy: 0.5,
+    cx: 0,
+    cy: 0,
     tx: 0.5,
     ty: 0.5,
     z: 1.0,
+
+    domain: {
+        left: -1,
+        right: 1,
+        top: -1,
+        bottom: 1
+    },
 
     // cx: 284.0085287846482,
     // cy: 129.63752665245204,
@@ -16,6 +23,25 @@ const state = {
     // z: 0.00004174557917929365,
 
     time: Date.now()
+}
+
+const zoomToFrac = (x, y, scale) => {
+
+    const domain = state.domain
+
+    const w = domain.right - domain.left
+    const h = domain.bottom - domain.top
+
+    const ow = (w * x)
+    const oh = (h * y)
+
+    domain.left = ((domain.left - ow) * scale) + ow
+    domain.right = ((domain.right - ow) * scale) + ow
+
+    domain.top = ((domain.top - oh) * scale) + oh
+    domain.bottom = ((domain.bottom - oh) * scale) + oh
+
+    console.log('scale', scale)
 }
 
 const color = idx => {
@@ -36,24 +62,34 @@ const ITERATIONS = 10
 
 const renderMandlebrot = (context) => {
 
-    const tx = state.tx * context.canvas.width
-    const ty = state.ty * context.canvas.height
+    /// 
+    const l = state.domain.left
+    const r = state.domain.right
 
-    const cx = state.cx * context.canvas.width
-    const cy = state.cy * context.canvas.height
+    const t = state.domain.top
+    const b = state.domain.bottom
+
+    // console.log(`
+    // left: ${l}
+    // rght: ${r}
+    // top: ${t}
+    // bot: ${b}
+    // `)
 
     var zoom = state.z;
-    console.log(tx, ty, zoom)
+    for (var k = 0; k < context.canvas.width; k++) {
+        //for (var ix = sx; ix < ex; ix++) {
 
-    for (var ix = 0; ix < context.canvas.width; ix++) {
 
-        for (var iy = 0; iy < context.canvas.height; iy++) {
+        for (var j = 0; j < context.canvas.height; j++) {
+            //for (var iy = sy; iy < ey; iy++) {
 
-            let sx = ((ix - cx) * zoom) + cx - (tx)
-            let sy = ((iy - cy) * zoom) + cy - (ty)
 
-            let x = ((sx))
-            let y = ((sy))
+            var ix = (r - l) * (k / context.canvas.width) + l
+            var iy = (b - t) * (j / context.canvas.height) + t
+
+            let x = ix
+            let y = iy
 
             var COMPx = 0
             var COMPy = 0
@@ -82,18 +118,11 @@ const renderMandlebrot = (context) => {
             context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
 
 
-
-            if (ix > cx - 2 && ix < cx + 2) {
-                context.fillStyle = 'rgba(255,0,0,1)'
-            }
-            if (iy > cy - 2 && iy < cy + 2) {
-                context.fillStyle = 'rgba(255,0,0,1)'
-            }
-
-            context.fillRect(ix, iy, 1, 1);
+            context.fillRect(k, j, 1, 1);
         }
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -114,20 +143,25 @@ document.addEventListener('DOMContentLoaded', () => {
             state.tx = event.clientX / event.currentTarget.width
             state.ty = event.clientY / event.currentTarget.height
         }
-        state.cx = event.clientX / event.currentTarget.width
-        state.cy = event.clientY / event.currentTarget.height
+
+        state.debugx = event.clientX / event.currentTarget.width
+        state.debugy = event.clientY / event.currentTarget.height
     })
 
     element.addEventListener('mousewheel', event => {
 
+        const x = event.clientX / event.currentTarget.width
+        const y = event.clientY / event.currentTarget.height
 
         if (event.wheelDeltaY < 0) {
-            state.z *= (1.0 / 0.7)
+            state.z += 0.1
         }
         else {
 
-            state.z *= 0.7
+            state.z -= 0.1
         }
+
+        zoomToFrac(x, y, state.z)
     })
 
     element.addEventListener('contextmenu', event => event.preventDefault())

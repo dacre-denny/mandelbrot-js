@@ -30,22 +30,27 @@ const lerp = (a, b, t) => {
 
 const zoomToFrac = (domain, x, y, scale) => {
 
-    const w = domain.right - domain.left
-    const h = domain.bottom - domain.top
+    //x = 0.75
+    //y = 0.75
 
-    const ow = (w * x) * 0.5
-    const oh = (h * y) * 0.5
+    const domainX = (domain.right - domain.left) * x + domain.left
+    const domainY = (domain.bottom - domain.top) * y + domain.top
 
-    const tx = lerp(domain.left, domain.right, x)
-    const ty = lerp(domain.top, domain.bottom, y)
+    const left = (domain.left - domainX) * scale + domainX
+    const right = (domain.right - domainX) * scale + domainX
+    const top = (domain.top - domainY) * scale + domainY
+    const bottom = (domain.bottom - domainY) * scale + domainY
 
+    // const w = domain.right - domain.left
+    // const h = domain.bottom - domain.top
 
-    const left = lerp(domain.left, tx, scale)
-    const right = lerp(domain.right, tx, scale)
-    const top = lerp(domain.top, ty, scale)
-    const bottom = lerp(domain.bottom, ty, scale)
+    // const ws = w * scale
+    // const hs = h * scale
 
-    console.log('from', domain.left, 'to', left)
+    // const left = domain.left * scale * x
+    // const right = domain.right * scale * (1-x)
+    // const top = domain.top * scale * y
+    // const bottom = domain.bottom * scale * (1-y)
 
     return {
         left,
@@ -53,7 +58,6 @@ const zoomToFrac = (domain, x, y, scale) => {
         top,
         bottom
     }
-    //return domain
 }
 
 const color = idx => {
@@ -166,10 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const y = event.clientY / event.currentTarget.height
 
         if (event.wheelDeltaY > 0) {
-            state.domain = zoomToFrac(state.domain, x, y, 0.25)
+            state.domain = zoomToFrac(state.domain, x, y, 0.7)
         }
         else {
-            state.domain = zoomToFrac(state.domain, x, y, 1.25)
+            state.domain = zoomToFrac(state.domain, x, y, 1.5)
 
         }
 

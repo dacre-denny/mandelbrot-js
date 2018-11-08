@@ -156,12 +156,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (event.buttons > 0) {
 
-            state.tx = event.clientX / event.currentTarget.width
-            state.ty = event.clientY / event.currentTarget.height
-        }
 
-        state.debugx = event.clientX / event.currentTarget.width
-        state.debugy = event.clientY / event.currentTarget.height
+            const domain = state.domain
+            const dw = (domain.right - domain.left)
+            const dh = (domain.bottom - domain.top)
+
+            const dx = -dw * event.movementX / event.currentTarget.width
+            const dy = -dh * event.movementY / event.currentTarget.height
+
+            state.domain.left += dx
+            state.domain.right += dx
+            state.domain.top += dy
+            state.domain.bottom += dy
+        }
     })
 
     element.addEventListener('mousewheel', event => {

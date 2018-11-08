@@ -39,6 +39,7 @@ const onRenderFrame = (canvas) => {
 
     Mandelbrot(imageData.data, width, height, state.time, state.domain)
 
+    context.clearRect(0, 0, width, height);
     context.putImageData(imageData, 0, 0)
 
     state.time = Date.now() / 1000.0

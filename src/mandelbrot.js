@@ -1,8 +1,8 @@
-const getTexel = (buffer, offset, phase, color) => {
+const getTexel = (buffer, offset, phase) => {
 
-    const r = color ? parseInt((Math.cos(phase) + 1) * .5 * 255) : 0
-    const g = color ? parseInt((Math.sin(phase + Math.PI) + 1) * .5 * 255) : 0
-    const b = color ? parseInt((Math.sin(phase) + 1) * .5 * 255) : 0
+    const r = parseInt((Math.cos(phase) + 1) * .5 * 255)
+    const g = parseInt((Math.sin(phase + Math.PI) + 1) * .5 * 255)
+    const b = parseInt((Math.sin(phase) + 1) * .5 * 255)
 
     buffer[offset + 0] = r
     buffer[offset + 1] = g
@@ -17,11 +17,15 @@ export default (buffer, width, height, phase, domain) => {
     const domainWidth = domain.right - domain.left
     const domainHeight = domain.bottom - domain.top
 
+    // avoids "domainHeight * (j / height)" per iteration
+    const factorX = domainWidth / width
+    const factorY = domainHeight / height
+
     for (var k = 0; k < width; k++) {
         for (var j = 0; j < height; j++) {
 
-            const ix = domainWidth * (k / width) + domain.left
-            const iy = domainHeight * (j / height) + domain.top
+            const ix = (k * factorX) + domain.left
+            const iy = (j * factorY) + domain.top
 
             var COMPx = 0
             var COMPy = 0
@@ -38,7 +42,8 @@ export default (buffer, width, height, phase, domain) => {
                 var zN = (COMPx_new + COMPy_new)
 
                 if (Math.abs(zN - z) > 5) {
-                    isSet = true
+                    var off = (j * width + k) * 4;
+                    getTexel(buffer, off, i * 10 + phase)
                     break
                 }
 

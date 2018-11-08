@@ -1,9 +1,8 @@
-import mandelbrot from './mandelbrot'
+import mandelbrot from './src/mandelbrot'
+import domain from './src/domain'
 import './src/styles.scss'
 
 const state = {
-    tx: 0.5,
-    ty: 0.5,
     z: 1.0,
 
     domain: {
@@ -43,7 +42,6 @@ const zoomToFrac = (domain, x, y, scale) => {
 
 var RES = 200.0
 
-
 const renderFrame = () => {
 
     const element = document.getElementById('mandelbrot');
@@ -81,18 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (event.buttons > 0) {
 
+            const dx = -event.movementX / document.body.clientWidth
+            const dy = -event.movementY / document.body.clientHeight
 
-            const domain = state.domain
-            const dw = (domain.right - domain.left)
-            const dh = (domain.bottom - domain.top)
-
-            const dx = -dw * event.movementX / document.body.clientWidth
-            const dy = -dh * event.movementY / document.body.clientHeight
-
-            state.domain.left += dx
-            state.domain.right += dx
-            state.domain.top += dy
-            state.domain.bottom += dy
+            state.domain = domain.translate(state.domain, dx, dy)
         }
     })
 

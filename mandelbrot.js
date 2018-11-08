@@ -10,23 +10,18 @@ const getTexel = (buffer, offset, phase, color) => {
     buffer[offset + 3] = 255
 }
 
-const ITERATIONS = 50
+const ITERATIONS = 250
 
 export default (buffer, width, height, phase, domain) => {
 
-    const l = domain.left
-    const r = domain.right
-
-    const t = domain.top
-    const b = domain.bottom
+    const domainWidth = domain.right - domain.left
+    const domainHeight = domain.bottom - domain.top
 
     for (var k = 0; k < width; k++) {
         for (var j = 0; j < height; j++) {
-            var ix = (r - l) * (k / width) + l
-            var iy = (b - t) * (j / height) + t
 
-            let x = ix
-            let y = iy
+            const ix = domainWidth * (k / width) + domain.left
+            const iy = domainHeight * (j / height) + domain.top
 
             var COMPx = 0
             var COMPy = 0
@@ -37,12 +32,12 @@ export default (buffer, width, height, phase, domain) => {
 
             for (i = 0; i < 1; i += (1 / ITERATIONS)) {
 
-                var COMPx_new = COMPx * COMPx - COMPy * COMPy + y
-                var COMPy_new = 2.0 * COMPx * COMPy + x
+                var COMPx_new = COMPx * COMPx - COMPy * COMPy + ix
+                var COMPy_new = 2.0 * COMPx * COMPy + iy
 
                 var zN = (COMPx_new + COMPy_new)
 
-                if (Math.abs(zN - z) > 15) {
+                if (Math.abs(zN - z) > 5) {
                     isSet = true
                     break
                 }

@@ -1,12 +1,12 @@
-const zoom = (domain, fracX, fracY, zoomPercent) => {
+const zoom = (domain, fracX, fracY, scale) => {
 
-    const domainX = (domain.right - domain.left) * x + domain.left
-    const domainY = (domain.bottom - domain.top) * y + domain.top
+    const originX = (domain.right - domain.left) * fracX + domain.left
+    const originY = (domain.bottom - domain.top) * fracY + domain.top
 
-    const left = (domain.left - domainX) * scale + domainX
-    const right = (domain.right - domainX) * scale + domainX
-    const top = (domain.top - domainY) * scale + domainY
-    const bottom = (domain.bottom - domainY) * scale + domainY
+    const left = (domain.left - originX) * scale + originX
+    const right = (domain.right - originX) * scale + originX
+    const top = (domain.top - originY) * scale + originY
+    const bottom = (domain.bottom - originY) * scale + originY
 
     return {
         left,

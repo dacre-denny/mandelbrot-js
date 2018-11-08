@@ -22,24 +22,6 @@ const state = {
     time: Date.now()
 }
 
-const zoomToFrac = (domain, x, y, scale) => {
-
-    const domainX = (domain.right - domain.left) * x + domain.left
-    const domainY = (domain.bottom - domain.top) * y + domain.top
-
-    const left = (domain.left - domainX) * scale + domainX
-    const right = (domain.right - domainX) * scale + domainX
-    const top = (domain.top - domainY) * scale + domainY
-    const bottom = (domain.bottom - domainY) * scale + domainY
-
-    return {
-        left,
-        right,
-        top,
-        bottom
-    }
-}
-
 var RES = 200.0
 
 const renderFrame = () => {
@@ -92,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const y = event.clientY / document.body.clientHeight
 
         const scale = (event.wheelDeltaY > 0) ? 0.7 : 1.5
-        state.domain = zoomToFrac(state.domain, x, y, scale)
+        state.domain = domain.zoom(state.domain, x, y, scale)
 
     })
 

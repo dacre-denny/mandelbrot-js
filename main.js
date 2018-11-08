@@ -1,4 +1,4 @@
-import { hello } from './mandelbrot'
+import mandelbrot from './mandelbrot'
 import './src/styles.scss'
 
 const state = {
@@ -23,15 +23,7 @@ const state = {
     time: Date.now()
 }
 
-const lerp = (a, b, t) => {
-
-    return (b - a) * t + a
-}
-
 const zoomToFrac = (domain, x, y, scale) => {
-
-    //x = 0.75
-    //y = 0.75
 
     const domainX = (domain.right - domain.left) * x + domain.left
     const domainY = (domain.bottom - domain.top) * y + domain.top
@@ -40,17 +32,6 @@ const zoomToFrac = (domain, x, y, scale) => {
     const right = (domain.right - domainX) * scale + domainX
     const top = (domain.top - domainY) * scale + domainY
     const bottom = (domain.bottom - domainY) * scale + domainY
-
-    // const w = domain.right - domain.left
-    // const h = domain.bottom - domain.top
-
-    // const ws = w * scale
-    // const hs = h * scale
-
-    // const left = domain.left * scale * x
-    // const right = domain.right * scale * (1-x)
-    // const top = domain.top * scale * y
-    // const bottom = domain.bottom * scale * (1-y)
 
     return {
         left,
@@ -73,83 +54,51 @@ const color = idx => {
         }, 1)`
 }
 
-var RES = 250.0
-const ITERATIONS = 10
+const getTexel = (buffer, offset, phase, color) => {
 
-const renderMandlebrot = (context) => {
+    const r = color ? parseInt((Math.cos(phase) + 1) * .5 * 255) : 0
+    const g = color ? parseInt((Math.sin(phase + Math.PI) + 1) * .5 * 255) : 0
+    const b = color ? parseInt((Math.sin(phase) + 1) * .5 * 255) : 0
 
-    /// 
-    const l = state.domain.left
-    const r = state.domain.right
-
-    const t = state.domain.top
-    const b = state.domain.bottom
-
-    // console.log(`
-    // left: ${l}
-    // rght: ${r}
-    // top: ${t}
-    // bot: ${b}
-    // `)
-
-    var zoom = state.z;
-    for (var k = 0; k < context.canvas.width; k++) {
-        //for (var ix = sx; ix < ex; ix++) {
-
-
-        for (var j = 0; j < context.canvas.height; j++) {
-            //for (var iy = sy; iy < ey; iy++) {
-
-
-            var ix = (r - l) * (k / context.canvas.width) + l
-            var iy = (b - t) * (j / context.canvas.height) + t
-
-            let x = ix
-            let y = iy
-
-            var COMPx = 0
-            var COMPy = 0
-
-            var z = 0
-            var isSet = false
-            var i = 0
-
-            for (i = 0; i < 1; i += (1 / ITERATIONS)) {
-
-                var COMPx_new = COMPx * COMPx - COMPy * COMPy + y
-                var COMPy_new = 2.0 * COMPx * COMPy + x
-
-                var zN = (COMPx_new + COMPy_new)
-
-                if (Math.abs(zN - z) > 15) {
-                    isSet = true
-                    break
-                }
-
-                COMPx = COMPx_new
-                COMPy = COMPy_new
-                z = zN
-            }
-
-            context.fillStyle = isSet ? color(i) : 'rgba(0,0,0,1)'
-
-
-            context.fillRect(k, j, 1, 1);
-        }
-    }
+    buffer[offset + 0] = r
+    buffer[offset + 1] = g
+    buffer[offset + 2] = b
+    buffer[offset + 3] = 255
 }
 
 
+
+var RES = 200.0
+const ITERATIONS = 50
+
+const renderMandlebrot = (context) => {
+
+    const range_w = context.canvas.width
+    const range_h = context.canvas.height
+
+    context.clearRect(0, 0, range_w, range_h);
+    const id = context.getImageData(0, 0, range_w, range_h)
+    const buffer = id.data
+
+    mandelbrot(buffer, range_w, range_h, state.time, state.domain)
+
+    context.putImageData(id, 0, 0)
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // document.addEventListener('resize', () => {
-
-    // })
-
     const element = document.getElementById('mandelbrot');
-    const ratio = document.body.clientWidth / document.body.clientHeight
+    window.addEventListener('resize', () => {
 
-    element.width = RES
+        const ratio = document.body.clientWidth / document.body.clientHeight
+        element.width = RES
+        element.height = RES / ratio
+
+    })
+
+
+    const ratio = document.body.clientWidth / document.body.clientHeight
+    element.width = RES * ratio
     element.height = RES
 
     element.addEventListener('mousemove', event => {
@@ -161,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const dw = (domain.right - domain.left)
             const dh = (domain.bottom - domain.top)
 
-            const dx = -dw * event.movementX / event.currentTarget.width
-            const dy = -dh * event.movementY / event.currentTarget.height
+            const dx = -dw * event.movementX / document.body.clientWidth
+            const dy = -dh * event.movementY / document.body.clientHeight
 
             state.domain.left += dx
             state.domain.right += dx
@@ -173,16 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     element.addEventListener('mousewheel', event => {
 
-        const x = event.clientX / event.currentTarget.width
-        const y = event.clientY / event.currentTarget.height
+        const x = event.clientX / document.body.clientWidth
+        const y = event.clientY / document.body.clientHeight
 
-        if (event.wheelDeltaY > 0) {
-            state.domain = zoomToFrac(state.domain, x, y, 0.7)
-        }
-        else {
-            state.domain = zoomToFrac(state.domain, x, y, 1.5)
-
-        }
+        const scale = (event.wheelDeltaY > 0) ? 0.7 : 1.5
+        state.domain = zoomToFrac(state.domain, x, y, scale)
 
     })
 

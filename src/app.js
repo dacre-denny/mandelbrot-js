@@ -76,10 +76,26 @@ const onRenderFrame = (canvas) => {
     state.time = Date.now() / 1000.0
 }
 
+const onReset = () => {
+
+    state.domain = {
+        left: -1,
+        right: 1,
+        top: -1,
+        bottom: 1
+    }
+}
+
+const onToggleMode = () => {
+
+}
+
 export default {
     onRenderFrame,
     onCanvasMouseMove,
     onCanvasMouseWheel,
     onCanvasFlyTo,
-    onWindowResize
+    onWindowResize,
+    onReset,
+    onToggleMode
 }

@@ -1,4 +1,4 @@
-const getTexel = (buffer, offset, phase) => {
+const colorTexel = (buffer, offset, phase) => {
 
     const r = parseInt((Math.cos(phase) + 1) * .5 * 255)
     const g = parseInt((Math.sin(phase + Math.PI) + 1) * .5 * 255)
@@ -24,25 +24,22 @@ export default (buffer, width, height, phase, domain) => {
     for (var k = 0; k < width; k++) {
         for (var j = 0; j < height; j++) {
 
-            const ix = (k * factorX) + domain.left
-            const iy = (j * factorY) + domain.top
+            const x = (k * factorX) + domain.left
+            const y = (j * factorY) + domain.top
+            var z = 0
 
             var COMPx = 0
             var COMPy = 0
 
-            var z = 0
-            var i = 0
+            for (var i = 0; i < 1; i += (1 / ITERATIONS)) {
 
-            for (i = 0; i < 1; i += (1 / ITERATIONS)) {
-
-                var COMPx_new = COMPx * COMPx - COMPy * COMPy + ix
-                var COMPy_new = 2.0 * COMPx * COMPy + iy
-
-                var zN = (COMPx_new + COMPy_new)
+                const COMPx_new = COMPx * COMPx - COMPy * COMPy + x
+                const COMPy_new = 2.0 * COMPx * COMPy + y
+                const zN = (COMPx_new + COMPy_new)
 
                 if (Math.abs(zN - z) > 5) {
-                    var off = (j * width + k) * 4;
-                    getTexel(buffer, off, i * 10 + phase)
+                    const off = (j * width + k) * 4;
+                    colorTexel(buffer, off, i * 10 + phase)
                     break
                 }
 

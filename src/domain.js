@@ -34,7 +34,25 @@ const translate = (domain, fracX, fracY) => {
     }
 }
 
+const lerp = (a, b, t) => ((b - a) * t + a)
+
+const interpolate = (fromDomain, toDomain, frac) => {
+
+    const left = lerp(fromDomain.left, toDomain.left, frac)
+    const right = lerp(fromDomain.right, toDomain.right, frac)
+    const top = lerp(fromDomain.top, toDomain.top, frac)
+    const bottom = lerp(fromDomain.bottom, toDomain.bottom, frac)
+
+    return {
+        left,
+        right,
+        top,
+        bottom
+    }
+}
+
 export default {
     zoom,
-    translate
+    translate,
+    interpolate
 }

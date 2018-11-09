@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
         Canvas.onCanvasMouseWheel(canvas, event)
     })
 
+    canvas.addEventListener('dblclick', event => {
+
+        const x = event.clientX / document.body.clientWidth
+        const y = event.clientY / document.body.clientHeight
+
+        Canvas.onCanvasFlyTo(x, y, 0.17)
+    })
+
     canvas.addEventListener('contextmenu', event => event.preventDefault())
 
     const onRequestAnimationFrame = () => {

@@ -30,6 +30,34 @@ const onCanvasMouseWheel = (canvas, event) => {
     state.domain = Domain.zoom(state.domain, x, y, scale)
 }
 
+const onCanvasFlyTo = (toX, toY, zoom) => {
+
+    if (!state.flying) {
+
+        const fromDomain = Object.assign({}, state.domain)
+        const toDomain = Domain.zoom(state.domain, toX, toY, zoom)
+
+        state.flying = true
+
+        let flyFrac = 0
+        const flyStep = () => {
+
+            if (flyFrac < 1.0) {
+
+                state.domain = Domain.interpolate(fromDomain, toDomain, flyFrac)
+                flyFrac += 0.025
+
+                setTimeout(flyStep)
+            }
+            else {
+                state.flying = false
+            }
+        }
+
+        flyStep()
+    }
+}
+
 const onRenderFrame = (canvas) => {
 
     const context = canvas.getContext('2d')
@@ -52,5 +80,6 @@ export default {
     onRenderFrame,
     onCanvasMouseMove,
     onCanvasMouseWheel,
+    onCanvasFlyTo,
     onWindowResize
 }

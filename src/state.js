@@ -7,5 +7,6 @@ export default {
         bottom: 1
     },
 
+    flying : false,
     time: Date.now()
 }

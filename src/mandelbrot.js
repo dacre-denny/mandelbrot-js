@@ -10,7 +10,7 @@ const getTexel = (buffer, offset, phase) => {
     buffer[offset + 3] = 255
 }
 
-const ITERATIONS = 250
+const ITERATIONS = 150
 
 export default (buffer, width, height, phase, domain) => {
 
@@ -31,7 +31,6 @@ export default (buffer, width, height, phase, domain) => {
             var COMPy = 0
 
             var z = 0
-            var isSet = false
             var i = 0
 
             for (i = 0; i < 1; i += (1 / ITERATIONS)) {
@@ -51,10 +50,6 @@ export default (buffer, width, height, phase, domain) => {
                 COMPy = COMPy_new
                 z = zN
             }
-
-            var off = (j * width + k) * 4;
-
-            getTexel(buffer, off, i * 10 + phase, isSet)
         }
     }
 

@@ -23,9 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const onRequestAnimationFrame = () => {
 
-        Canvas.onRenderFrame(canvas)
-
-        window.requestAnimationFrame(onRequestAnimationFrame)
+        setTimeout(() => {
+            Canvas.onRenderFrame(canvas)
+            requestAnimationFrame(onRequestAnimationFrame)
+        }, 10)
     }
 
     onRequestAnimationFrame()

@@ -2,7 +2,9 @@ import Mandelbrot from './mandelbrot'
 import Domain from './domain'
 import state from './state'
 
-const onCanvasMouseMove = (canvas, event) => {
+let context = null
+
+const onCanvasMouseMove = (event) => {
 
     if (event.buttons > 0) {
 
@@ -13,7 +15,7 @@ const onCanvasMouseMove = (canvas, event) => {
     }
 }
 
-const onCanvasMouseWheel = (canvas, event) => {
+const onCanvasMouseWheel = (event) => {
 
     const x = event.clientX / document.body.clientWidth
     const y = event.clientY / document.body.clientHeight
@@ -50,14 +52,13 @@ const onCanvasFlyTo = (toX, toY, zoom) => {
     }
 }
 
-const onRenderFrame = (canvas) => {
+const getContext = (canvas, type) => {
 
-    const aspect = document.body.clientWidth / document.body.clientHeight
+    return canvas.getContext(type)
+}
 
-    canvas.width = state.resolution * aspect
-    canvas.height = state.resolution
+const onRenderSoftwareFrame = () => {
 
-    const context = canvas.getContext('2d')
     const width = context.canvas.width
     const height = context.canvas.height
 
@@ -69,6 +70,34 @@ const onRenderFrame = (canvas) => {
     Mandelbrot(imageData.data, width, height, state.time, state.iterations, state.domain)
 
     context.putImageData(imageData, 0, 0)
+}
+
+const onRenderWebGLFrame = () => {
+
+    context.clearColor(1.0, 0.0, 0.0, 1.0);
+    context.clear(context.COLOR_BUFFER_BIT);
+}
+
+const onRenderFrame = () => {
+
+    const aspect = document.body.clientWidth / document.body.clientHeight
+
+    if (!context) {
+        context = getContext(canvas, state.webgl ? 'webgl' : '2d')
+        if (!context) {
+            return
+        }
+    }
+
+    context.canvas.width = state.resolution * aspect
+    context.canvas.height = state.resolution
+
+    if (state.webgl) {
+        onRenderWebGLFrame()
+    }
+    else {
+        onRenderSoftwareFrame()
+    }
 
     state.time = Date.now() / 1000.0
 }
@@ -83,10 +112,6 @@ const onReset = () => {
     }
 }
 
-const onToggleMode = () => {
-
-}
-
 const onChangeResoultion = (event) => {
 
     state.resolution = parseInt(event.currentTarget.value)
@@ -97,7 +122,54 @@ const onChangeIterations = (event) => {
     state.iterations = parseInt(event.currentTarget.value)
 }
 
+const onToggleMode = () => {
+
+    state.webgl = !state.webgl
+
+    for (const node of document.body.querySelectorAll('canvas')) { node.remove() }
+
+    const canvas = document.createElement('canvas')
+
+    document.body.appendChild(canvas)
+
+    context = canvas.getContext(state.webgl ? 'webgl' : '2d')
+}
+
+const createCanvas = () => {
+
+    for (const node of document.body.querySelectorAll('canvas')) { node.remove() }
+
+    context = null
+
+    const canvas = document.createElement('canvas')
+
+    document.body.appendChild(canvas)
+
+    context = canvas.getContext(state.webgl ? 'webgl' : '2d')
+
+    canvas.addEventListener('mousemove', onCanvasMouseMove)
+
+    canvas.addEventListener('mousewheel', onCanvasMouseWheel)
+
+    canvas.addEventListener('dblclick', event => {
+
+        const x = event.clientX / document.body.clientWidth
+        const y = event.clientY / document.body.clientHeight
+
+        App.onCanvasFlyTo(x, y, 0.17)
+    })
+
+    canvas.addEventListener('contextmenu', event => event.preventDefault())
+}
+
+const onInit = () => {
+
+    createCanvas()
+
+}
+
 export default {
+    onInit,
     onRenderFrame,
     onCanvasMouseMove,
     onCanvasMouseWheel,

@@ -1,3 +1,12 @@
+@mixin facade {
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none; 
+     -khtml-user-select: none; 
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
 body {
     margin:0;
     padding:0;
@@ -24,6 +33,9 @@ canvas {
     font-weight: bold;
     color:#eeeeee; 
     z-index: 1;
+    pointer-events: none;
+
+    @include facade()
 }
 
 #controls {
@@ -64,4 +76,6 @@ canvas {
             display: none;            
         }
     }
+
+    @include facade()
 }

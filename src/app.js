@@ -1,6 +1,7 @@
 import Mandelbrot from './mandelbrot'
 import Domain from './domain'
 import state from './state'
+import WebGL from './webgl'
 
 let context = null
 
@@ -72,12 +73,6 @@ const onRenderSoftwareFrame = () => {
     context.putImageData(imageData, 0, 0)
 }
 
-const onRenderWebGLFrame = () => {
-
-    context.clearColor(1.0, 0.0, 0.0, 1.0);
-    context.clear(context.COLOR_BUFFER_BIT);
-}
-
 const onRenderFrame = () => {
 
     const aspect = document.body.clientWidth / document.body.clientHeight
@@ -93,7 +88,7 @@ const onRenderFrame = () => {
     context.canvas.height = state.resolution
 
     if (state.webgl) {
-        onRenderWebGLFrame()
+        WebGL.render(context)
     }
     else {
         onRenderSoftwareFrame()
@@ -126,13 +121,7 @@ const onToggleMode = () => {
 
     state.webgl = !state.webgl
 
-    for (const node of document.body.querySelectorAll('canvas')) { node.remove() }
-
-    const canvas = document.createElement('canvas')
-
-    document.body.appendChild(canvas)
-
-    context = canvas.getContext(state.webgl ? 'webgl' : '2d')
+    createCanvas()
 }
 
 const createCanvas = () => {
@@ -145,7 +134,14 @@ const createCanvas = () => {
 
     document.body.appendChild(canvas)
 
-    context = canvas.getContext(state.webgl ? 'webgl' : '2d')
+    if (state.webgl) {
+
+        context = canvas.getContext('webgl')
+        WebGL.init(context)
+    }
+    else {
+        context = canvas.getContext('2d')
+    }
 
     canvas.addEventListener('mousemove', onCanvasMouseMove)
 

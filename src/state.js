@@ -7,6 +7,9 @@ export default {
         bottom: 1
     },
 
-    flying : false,
+    resolution: 300,
+    iterations: 150,
+
+    flying: false,
     time: Date.now()
 }

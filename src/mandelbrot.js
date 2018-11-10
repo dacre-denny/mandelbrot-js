@@ -10,9 +10,7 @@ const colorTexel = (buffer, offset, phase) => {
     buffer[offset + 3] = 255
 }
 
-const ITERATIONS = 150
-
-export default (buffer, width, height, phase, domain) => {
+export default (buffer, width, height, phase, iterations, domain) => {
 
     const domainWidth = domain.right - domain.left
     const domainHeight = domain.bottom - domain.top
@@ -31,7 +29,7 @@ export default (buffer, width, height, phase, domain) => {
             var COMPx = 0
             var COMPy = 0
 
-            for (var i = 0; i < 1; i += (1 / ITERATIONS)) {
+            for (var i = 0; i < 1; i += (1 / iterations)) {
 
                 const COMPx_new = COMPx * COMPx - COMPy * COMPy + x
                 const COMPy_new = 2.0 * COMPx * COMPy + y

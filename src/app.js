@@ -6,8 +6,6 @@ const RESOLUTION = 300.0
 
 const onWindowResize = (canvas) => {
 
-    canvas.width = RESOLUTION
-    canvas.height = RESOLUTION
 }
 
 const onCanvasMouseMove = (canvas, event) => {
@@ -60,6 +58,11 @@ const onCanvasFlyTo = (toX, toY, zoom) => {
 
 const onRenderFrame = (canvas) => {
 
+    const aspect = document.body.clientWidth / document.body.clientHeight
+
+    canvas.width = state.resolution * aspect
+    canvas.height = state.resolution
+
     const context = canvas.getContext('2d')
     const width = context.canvas.width
     const height = context.canvas.height
@@ -69,7 +72,7 @@ const onRenderFrame = (canvas) => {
 
     const imageData = context.getImageData(0, 0, width, height)
 
-    Mandelbrot(imageData.data, width, height, state.time, state.domain)
+    Mandelbrot(imageData.data, width, height, state.time, state.iterations, state.domain)
 
     context.putImageData(imageData, 0, 0)
 
@@ -90,6 +93,16 @@ const onToggleMode = () => {
 
 }
 
+const onChangeResoultion = (event) => {
+
+    state.resolution = parseInt(event.currentTarget.value)
+}
+
+const onChangeIterations = (event) => {
+
+    state.iterations = parseInt(event.currentTarget.value)
+}
+
 export default {
     onRenderFrame,
     onCanvasMouseMove,
@@ -97,5 +110,7 @@ export default {
     onCanvasFlyTo,
     onWindowResize,
     onReset,
-    onToggleMode
+    onToggleMode,
+    onChangeResoultion,
+    onChangeIterations
 }

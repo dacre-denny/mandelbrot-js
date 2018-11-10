@@ -10,9 +10,19 @@
 
     <form id="controls">
         <h1>Mandlebrot surfer</h1>
-        <input id="reset" type="button" value="Reset" />
-        <input id="fav" type="button" value="Fav" />
-        <input type="button" id="mode" value="Webgl" />
+        <div>
+            <input id="reset" type="button" value="Reset" />
+            <input id="fav" type="button" value="Fav" />
+            <input type="button" id="mode" value="Webgl" />
+        </div>
+        <div>
+            <label>Iterations</label>
+            <input type="range" min="1" max="500" value="150" id="iterations" />
+        </div>
+        <div>
+            <label>Resolution</label>
+            <input type="range" min="1" max="500" value="300" id="resolution" />
+        </div>
     </form>
 
     <a id="credit">

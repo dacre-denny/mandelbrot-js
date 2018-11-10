@@ -30,8 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('contextmenu', event => event.preventDefault())
 
     document.getElementById('reset').addEventListener('click', App.onReset)
-    document.getElementById('reset').addEventListener('click', App.onReset)
     document.getElementById('mode').addEventListener('click', App.onToggleMode)
+    document.getElementById('resolution').addEventListener('change', App.onChangeResoultion)
+    document.getElementById('iterations').addEventListener('change', App.onChangeIterations)
 
     const onRequestAnimationFrame = () => {
 

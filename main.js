@@ -5,12 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const canvas = document.querySelector('canvas');
 
-    App.onWindowResize(canvas)
-
-    window.addEventListener('resize', () => {
-        App.onWindowResize(canvas)
-    })
-
     canvas.addEventListener('mousemove', event => {
         App.onCanvasMouseMove(canvas, event)
     })

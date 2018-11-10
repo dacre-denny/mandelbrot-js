@@ -9,6 +9,7 @@ export default {
 
     resolution: 300,
     iterations: 150,
+    webgl: false,
 
     flying: false,
     time: Date.now()

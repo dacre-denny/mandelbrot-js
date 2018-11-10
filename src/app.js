@@ -2,12 +2,6 @@ import Mandelbrot from './mandelbrot'
 import Domain from './domain'
 import state from './state'
 
-const RESOLUTION = 300.0
-
-const onWindowResize = (canvas) => {
-
-}
-
 const onCanvasMouseMove = (canvas, event) => {
 
     if (event.buttons > 0) {
@@ -108,7 +102,6 @@ export default {
     onCanvasMouseMove,
     onCanvasMouseWheel,
     onCanvasFlyTo,
-    onWindowResize,
     onReset,
     onToggleMode,
     onChangeResoultion,

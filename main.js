@@ -12,10 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const onRequestAnimationFrame = () => {
 
-        setTimeout(() => {
-            App.onRenderFrame()
-            requestAnimationFrame(onRequestAnimationFrame)
-        }, 10)
+        App.onRenderFrame()
+        requestAnimationFrame(onRequestAnimationFrame)
     }
 
     onRequestAnimationFrame()

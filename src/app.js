@@ -53,11 +53,6 @@ const onCanvasFlyTo = (toX, toY, zoom) => {
     }
 }
 
-const getContext = (canvas, type) => {
-
-    return canvas.getContext(type)
-}
-
 const onRenderSoftwareFrame = () => {
 
     const width = context.canvas.width
@@ -76,14 +71,6 @@ const onRenderSoftwareFrame = () => {
 const onRenderFrame = () => {
 
     const aspect = document.body.clientWidth / document.body.clientHeight
-
-    if (!context) {
-        context = getContext(canvas, state.webgl ? 'webgl' : '2d')
-        if (!context) {
-            return
-        }
-    }
-
     context.canvas.width = state.resolution * aspect
     context.canvas.height = state.resolution
 
@@ -131,6 +118,9 @@ const createCanvas = () => {
     context = null
 
     const canvas = document.createElement('canvas')
+
+    canvas.width = state.resolution
+    canvas.height = state.resolution
 
     document.body.appendChild(canvas)
 

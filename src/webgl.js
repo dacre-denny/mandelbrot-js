@@ -46,17 +46,27 @@ function loadShader(gl, type, source) {
 const initShader = (gl) => {
 
     const vertexShader = loadShader(gl, gl.VERTEX_SHADER, `
+    precision highp float;
+
     attribute vec2 aVertexPosition;
     uniform vec2 uModelViewMatrix;
 
+    varying vec4 vColor; 
+
+
     void main() {
 
-        gl_Position =  vec4(aVertexPosition.xy, 0, 1);
+        vColor = vec4(aVertexPosition.xy, 0.0, 1.0);
+        gl_Position =  vec4(aVertexPosition.xy, 0.0, 1.0);
     }
 `);
     const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, `
+    precision highp float;
+    
+    varying vec4 vColor; 
+
     void main() {
-        gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);
+        gl_FragColor = vColor;
     }
 `);
 
@@ -83,11 +93,10 @@ const initShader = (gl) => {
 const render = (gl) => {
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
+    //gl.clearDepth(1.0);
+    //gl.disable(gl.DEPTH_TEST);
 
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -104,13 +113,11 @@ const render = (gl) => {
 
     gl.useProgram(program.program);
 
-    gl.uniform2fv(
-        program.uniformLocations.modelViewMatrix,
-        [1, 0]);
+    // gl.uniform2fv(
+    //     program.uniformLocations.modelViewMatrix,
+    //     [1, 0]);
 
-    {
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    }
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
 
 export default {

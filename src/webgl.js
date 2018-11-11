@@ -49,24 +49,23 @@ const initShader = (gl) => {
     precision highp float;
 
     attribute vec2 aVertexPosition;
-    uniform vec2 uModelViewMatrix;
 
-    varying vec4 vColor; 
+    varying vec2 vUV; 
 
 
     void main() {
 
-        vColor = vec4(aVertexPosition.xy, 0.0, 1.0);
+        vUV = (aVertexPosition + vec2(1.0,1.0)) * 0.5;
         gl_Position =  vec4(aVertexPosition.xy, 0.0, 1.0);
     }
 `);
     const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, `
     precision highp float;
     
-    varying vec4 vColor; 
+    varying vec2 vUV; 
 
     void main() {
-        gl_FragColor = vColor;
+        gl_FragColor = vec4(vUV,0.0,1.0);
     }
 `);
 
@@ -92,10 +91,7 @@ const initShader = (gl) => {
 
 const render = (gl) => {
 
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    //gl.clearDepth(1.0);
-    //gl.disable(gl.DEPTH_TEST);
-
+    gl.clearColor(1.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     {

@@ -70,9 +70,9 @@ const onRenderSoftwareFrame = () => {
 
 const onRenderFrame = () => {
 
-    const aspect = document.body.clientWidth / document.body.clientHeight
-    context.canvas.width = state.resolution * aspect
-    context.canvas.height = state.resolution
+    // const aspect = document.body.clientWidth / document.body.clientHeight
+    // context.canvas.width = state.resolution * aspect
+    // context.canvas.height = state.resolution
 
     if (state.webgl) {
         WebGL.render(context)

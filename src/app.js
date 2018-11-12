@@ -81,18 +81,19 @@ const onRenderFrame = () => {
         onRenderSoftwareFrame()
     }
 
-    state.time = (Date.now() / 1000.0) % 1000
+    if (state.animate) {
+        state.time = (Date.now() / 1000.0) % 1000
+    }
 }
 
 const onReset = () => {
 
-    onCanvasFlyTo(0.5, 0.5, 1.17)
-    // state.domain = {
-    //     left: -1,
-    //     right: 1,
-    //     top: -1,
-    //     bottom: 1
-    // }
+    state.domain = {
+        left: -1,
+        right: 1,
+        top: -1,
+        bottom: 1
+    }
 }
 
 const onChangeResoultion = (event) => {
@@ -103,6 +104,20 @@ const onChangeResoultion = (event) => {
 const onChangeIterations = (event) => {
 
     state.iterations = parseInt(event.currentTarget.value)
+}
+
+const onAnimateToggle = (event) => {
+
+    state.animate = !state.animate
+
+    const classList = event.currentTarget.classList
+
+    if (state.animate) {
+        classList.add('toggled')
+    }
+    else {
+        classList.remove('toggled')
+    }
 }
 
 const onToggleMode = (event) => {
@@ -172,6 +187,7 @@ export default {
     onCanvasMouseWheel,
     onCanvasFlyTo,
     onReset,
+    onAnimateToggle,
     onToggleMode,
     onChangeResoultion,
     onChangeIterations

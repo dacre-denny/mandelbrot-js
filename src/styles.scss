@@ -90,8 +90,8 @@ canvas {
                     -webkit-appearance: none; 
                     height: 20px;
                     width: 10px;
-                    background: #ddd;
-                    margin-top: -10px;
+                    background: #ffeb00;
+                    margin-top: -8px;
                     border-radius: 2px;
                 }
 
@@ -115,7 +115,8 @@ canvas {
             }
 
             &.toggled {
-                background: #4e4e4e;
+                background: #ffeb00;
+                color:#141414;
             }
         }
         

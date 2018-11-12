@@ -70,18 +70,18 @@ const onRenderSoftwareFrame = () => {
 
 const onRenderFrame = () => {
 
-    // const aspect = document.body.clientWidth / document.body.clientHeight
-    // context.canvas.width = state.resolution * aspect
-    // context.canvas.height = state.resolution
+    const aspect = document.body.clientWidth / document.body.clientHeight
+    context.canvas.width = state.resolution / aspect
+    context.canvas.height = state.resolution
 
     if (state.webgl) {
-        WebGL.render(context)
+        WebGL.render(context, state)
     }
     else {
         onRenderSoftwareFrame()
     }
 
-    state.time = Date.now() / 1000.0
+    state.time = (Date.now() / 1000.0) % 1000
 }
 
 const onReset = () => {
@@ -142,7 +142,7 @@ const createCanvas = () => {
         const x = event.clientX / document.body.clientWidth
         const y = event.clientY / document.body.clientHeight
 
-        App.onCanvasFlyTo(x, y, 0.17)
+        onCanvasFlyTo(x, y, 0.17)
     })
 
     canvas.addEventListener('contextmenu', event => event.preventDefault())

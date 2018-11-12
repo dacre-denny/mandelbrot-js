@@ -45,7 +45,7 @@ canvas {
     z-index: 1;
     background:#151515; 
     border-radius: 3px;
-    padding:0.25rem; 
+    padding:0.5rem; 
     
     h1 { 
         font-size: 1rem;
@@ -75,9 +75,30 @@ canvas {
 
         input {
             margin:0;
+            outline: none;
 
-            &[type="range"] { 
+            &:disabled {
+                opacity: 0.15;
+                pointer-events: none;
+            }
+
+            &[type=range] { 
                 width:100%;
+                -webkit-appearance: none;
+
+                &::-webkit-slider-thumb {
+                    -webkit-appearance: none; 
+                    height: 20px;
+                    width: 10px;
+                    background: #ddd;
+                    margin-top: -10px;
+                    border-radius: 2px;
+                }
+
+                &::-webkit-slider-runnable-track {  
+                    background: #090909;
+                    height:2px;
+                }
             }
 
             &[type="button"] {
@@ -91,6 +112,10 @@ canvas {
                 font-family: Arial, Helvetica, sans-serif;
                 padding:0.25rem 1rem;
                 border:none;  
+            }
+
+            &.toggled {
+                background: #4e4e4e;
             }
         }
         
@@ -116,3 +141,4 @@ canvas {
 
     @include facade()
 }
+ 

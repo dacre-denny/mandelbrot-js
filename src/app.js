@@ -70,9 +70,9 @@ const onRenderSoftwareFrame = () => {
 
 const onRenderFrame = () => {
 
-    const aspect = document.body.clientWidth / document.body.clientHeight
-    context.canvas.width = state.resolution / aspect
-    context.canvas.height = state.resolution
+    // const aspect = document.body.clientWidth / document.body.clientHeight
+    // context.canvas.width = state.resolution * aspect
+    // context.canvas.height = state.resolution
 
     if (state.webgl) {
         WebGL.render(context, state)
@@ -86,12 +86,13 @@ const onRenderFrame = () => {
 
 const onReset = () => {
 
-    state.domain = {
-        left: -1,
-        right: 1,
-        top: -1,
-        bottom: 1
-    }
+    onCanvasFlyTo(0.5, 0.5, 1.17)
+    // state.domain = {
+    //     left: -1,
+    //     right: 1,
+    //     top: -1,
+    //     bottom: 1
+    // }
 }
 
 const onChangeResoultion = (event) => {
@@ -104,9 +105,19 @@ const onChangeIterations = (event) => {
     state.iterations = parseInt(event.currentTarget.value)
 }
 
-const onToggleMode = () => {
+const onToggleMode = (event) => {
 
     state.webgl = !state.webgl
+
+    const classList = event.currentTarget.classList
+    if (state.webgl) {
+        classList.add('toggled')
+        document.getElementById('iterations').setAttribute('disabled', 'disabled')
+    }
+    else {
+        classList.remove('toggled')
+        document.getElementById('iterations').removeAttribute('disabled')
+    }
 
     createCanvas()
 }

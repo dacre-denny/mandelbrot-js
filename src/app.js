@@ -12,7 +12,12 @@ const onCanvasMouseMove = (event) => {
         const dx = -event.movementX / document.body.clientWidth
         const dy = -event.movementY / document.body.clientHeight
 
-        state.domain = Domain.translate(state.domain, dx, dy)
+
+
+        const domain = Domain.translate(getDomain(), dx, dy)
+
+        state.center.x += dx * state.zoom
+        state.center.y += dy * state.zoom
     }
 }
 
@@ -21,10 +26,23 @@ const onCanvasMouseWheel = (event) => {
     const x = event.clientX / document.body.clientWidth
     const y = event.clientY / document.body.clientHeight
 
-    const scale = (event.wheelDeltaY > 0) ? 0.7 : 1.5
-    state.domain = Domain.zoom(state.domain, x, y, scale)
+    const scale = state.zoom * ((event.wheelDeltaY > 0) ? 0.5 : 1.5)
 
+    state.center.x = state.center.x + (scale * (x - 0.5))
+    //state.center.y = state.center.y + (h * scale * (y - 0.5))
+    //state.zoom *= (event.wheelDeltaY > 0) ? 0.7 : 1.5
+
+    state.zoom = scale
     console.log(state)
+}
+
+const getDomain = () => {
+    return {
+        left: state.center.x - (state.zoom * state.aspectRatio * 0.5),
+        right: state.center.x + (state.zoom * state.aspectRatio * 0.5),
+        top: state.center.y - (state.zoom * 0.5),
+        bottom: state.center.y + (state.zoom * 0.5)
+    }
 }
 
 const onCanvasFlyTo = (toX, toY, zoom) => {
@@ -65,16 +83,14 @@ const onRenderSoftwareFrame = () => {
 
     const imageData = context.getImageData(0, 0, width, height)
 
-    Mandelbrot(imageData.data, width, height, state.time, state.iterations, state.domain)
+    const domain = getDomain()
+
+    Mandelbrot(imageData.data, width, height, state.time, state.iterations, domain)
 
     context.putImageData(imageData, 0, 0)
 }
 
 const onRenderFrame = () => {
-
-    // const aspect = document.body.clientWidth / document.body.clientHeight
-    // context.canvas.width = state.resolution * aspect
-    // context.canvas.height = state.resolution
 
     if (state.webgl) {
         WebGL.render(context, state)
@@ -100,7 +116,7 @@ const onReset = () => {
 
 const onWindowResize = () => {
 
-    state.aspectRatio = document.body.clientWidth / document.body.clientHeight 
+    state.aspectRatio = document.body.clientWidth / document.body.clientHeight
 }
 
 const onChangeResoultion = (event) => {

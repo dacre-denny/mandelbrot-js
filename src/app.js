@@ -23,6 +23,8 @@ const onCanvasMouseWheel = (event) => {
 
     const scale = (event.wheelDeltaY > 0) ? 0.7 : 1.5
     state.domain = Domain.zoom(state.domain, x, y, scale)
+
+    console.log(state)
 }
 
 const onCanvasFlyTo = (toX, toY, zoom) => {
@@ -94,6 +96,11 @@ const onReset = () => {
         top: -1,
         bottom: 1
     }
+}
+
+const onWindowResize = () => {
+
+    state.aspectRatio = document.body.clientWidth / document.body.clientHeight 
 }
 
 const onChangeResoultion = (event) => {
@@ -172,6 +179,8 @@ const createCanvas = () => {
     })
 
     canvas.addEventListener('contextmenu', event => event.preventDefault())
+
+    onWindowResize()
 }
 
 const onInit = () => {
@@ -190,5 +199,6 @@ export default {
     onAnimateToggle,
     onToggleMode,
     onChangeResoultion,
-    onChangeIterations
+    onChangeIterations,
+    onWindowResize
 }

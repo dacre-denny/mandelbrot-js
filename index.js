@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mode').addEventListener('click', App.onToggleMode)
     document.getElementById('resolution').addEventListener('change', App.onChangeResoultion)
     document.getElementById('iterations').addEventListener('change', App.onChangeIterations)
+    window.addEventListener('resize', App.onWindowResize)
 
     const onRequestAnimationFrame = () => {
 

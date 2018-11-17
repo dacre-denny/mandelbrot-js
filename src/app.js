@@ -26,13 +26,19 @@ const onCanvasMouseWheel = (event) => {
     const x = event.clientX / document.body.clientWidth
     const y = event.clientY / document.body.clientHeight
 
-    const scale = state.zoom * ((event.wheelDeltaY > 0) ? 0.5 : 1.5)
+    const factor = (event.wheelDeltaY > 0) ? 0.95 : 1.15
 
-    state.center.x = state.center.x + (scale * (x - 0.5))
+    const width = state.zoom * state.aspectRatio
+    const height = state.zoom
+
+    const ox = (width * (x - 0.5)) + state.center.x
+    const lx = (state.center.x - ox) * factor + ox
+
+    state.center.x = (state.center.x - ox) * factor + state.center.x
     //state.center.y = state.center.y + (h * scale * (y - 0.5))
     //state.zoom *= (event.wheelDeltaY > 0) ? 0.7 : 1.5
 
-    state.zoom = scale
+    //state.zoom = scale
     console.log(state)
 }
 

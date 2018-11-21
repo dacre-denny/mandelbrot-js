@@ -31,7 +31,7 @@ function ease(t) {
     return (t * t * t + 1)
 }
 
-const onCanvasFlyTo = (toX, toY, zoom) => {
+const onCanvasFlyTo = (toDomain) => {
 
     if (state.flying) {
         clearTimeout(state.flying)
@@ -39,7 +39,7 @@ const onCanvasFlyTo = (toX, toY, zoom) => {
     }
 
     const fromDomain = Object.assign({}, state.view)
-    const toDomain = Domain.zoom(state.view, toX, toY, zoom)
+    // const toDomain = Domain.zoom(state.view, toX, toY, zoom)
 
     let flyFrac = 0
     const flyStep = () => {
@@ -94,7 +94,7 @@ const onRenderFrame = () => {
 
 const onReset = () => {
 
-    state.view = Domain.identity()
+    onCanvasFlyTo(Domain.identity())
 }
 
 const onWindowResize = () => {
@@ -174,7 +174,8 @@ const createCanvas = () => {
         const x = event.clientX / document.body.clientWidth
         const y = event.clientY / document.body.clientHeight
 
-        onCanvasFlyTo(x, y, 0.1)
+
+        onCanvasFlyTo(Domain.zoom(state.view, x, y, 0.1))
     })
 
     canvas.addEventListener('contextmenu', event => event.preventDefault())

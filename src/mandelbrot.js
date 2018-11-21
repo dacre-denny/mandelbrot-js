@@ -1,3 +1,5 @@
+import Domain from './domain'
+
 const colorTexel = (buffer, offset, phase) => {
 
     const r = parseInt((Math.cos(phase) + 1) * .5 * 255)
@@ -10,10 +12,13 @@ const colorTexel = (buffer, offset, phase) => {
     buffer[offset + 3] = 255
 }
 
-export default (buffer, width, height, phase, iterations, domain) => {
+export default (buffer, width, height, phase, iterations, view) => {
 
-    const domainWidth = domain.right - domain.left
-    const domainHeight = domain.bottom - domain.top
+    const domainWidth = Domain.zoomWidth(view)
+    const domainHeight = Domain.zoomHeight(view)
+
+    const domainLeft = view.x - domainWidth * 0.5
+    const domainTop = view.y - domainHeight * 0.5
 
     // avoids "domainHeight * (j / height)" per iteration
     const factorX = domainWidth / width
@@ -22,8 +27,8 @@ export default (buffer, width, height, phase, iterations, domain) => {
     for (var k = 0; k < width; k++) {
         for (var j = 0; j < height; j++) {
 
-            const x = (k * factorX) + domain.left
-            const y = (j * factorY) + domain.top
+            const x = (k * factorX) + domainLeft
+            const y = (j * factorY) + domainTop
             var z = 0
 
             var COMPx = 0

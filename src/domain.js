@@ -1,36 +1,41 @@
-const zoom = (domain, fracX, fracY, scale) => {
+const zoom = (view, fracX, fracY, factor) => {
 
-    const originX = (domain.right - domain.left) * fracX + domain.left
-    const originY = (domain.bottom - domain.top) * fracY + domain.top
+    fracX -= 0.5
+    fracY -= 0.5
 
-    const left = (domain.left - originX) * scale + originX
-    const right = (domain.right - originX) * scale + originX
-    const top = (domain.top - originY) * scale + originY
-    const bottom = (domain.bottom - originY) * scale + originY
+    const mapWidth = zoomWidth(view)
+    const mapHeight = zoomHeight(view)
+
+    const newZoom = view.zoom * factor
+
+    const newMapWidth = newZoom * view.aspectRatio
+    const newMapHeight = newZoom
+
+    const x = view.x - (fracX * (newMapWidth - mapWidth))
+    const y = view.y - (fracY * (newMapHeight - mapHeight))
+    const zoom = newZoom
 
     return {
-        left,
-        right,
-        top,
-        bottom
+        x,
+        y,
+        zoom,
+        aspectRatio: view.aspectRatio
     }
 }
 
-const translate = (domain, fracX, fracY) => {
+const translate = (view, fracX, fracY) => {
 
-    const dw = (domain.right - domain.left)
-    const dh = (domain.bottom - domain.top)
+    const dw = zoomWidth(view)
+    const dh = zoomHeight(view)
 
-    const left = domain.left + fracX * dw
-    const right = domain.right + fracX * dw
-    const top = domain.top + fracY * dh
-    const bottom = domain.bottom + fracY * dh
+    const x = view.x + fracX * dw * view.zoom
+    const y = view.y + fracY * dh * view.zoom
 
     return {
-        left,
-        right,
-        top,
-        bottom
+        x,
+        y,
+        zoom: view.zoom,
+        aspectRatio: view.aspectRatio
     }
 }
 
@@ -38,21 +43,44 @@ const lerp = (a, b, t) => ((b - a) * t + a)
 
 const interpolate = (fromDomain, toDomain, frac) => {
 
-    const left = lerp(fromDomain.left, toDomain.left, frac)
-    const right = lerp(fromDomain.right, toDomain.right, frac)
-    const top = lerp(fromDomain.top, toDomain.top, frac)
-    const bottom = lerp(fromDomain.bottom, toDomain.bottom, frac)
+
+    const x = lerp(fromDomain.x, toDomain.x, frac)
+    const y = lerp(fromDomain.y, toDomain.y, frac)
+    const zoom = lerp(fromDomain.zoom, toDomain.zoom, frac)
+    const aspectRatio = lerp(fromDomain.aspectRatio, toDomain.aspectRatio, frac)
 
     return {
-        left,
-        right,
-        top,
-        bottom
+        x,
+        y,
+        zoom,
+        aspectRatio
+    }
+}
+
+const zoomWidth = (view) => {
+
+    return view.zoom * view.aspectRatio
+}
+
+const zoomHeight = (view) => {
+
+    return view.zoom
+}
+
+const identity = () => {
+    return {
+        x : 0,
+        y : 0,
+        aspectRatio : 1,
+        zoom : 1
     }
 }
 
 export default {
+    identity,
     zoom,
     translate,
-    interpolate
+    interpolate,
+    zoomWidth,
+    zoomHeight,
 }

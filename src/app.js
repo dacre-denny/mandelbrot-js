@@ -12,70 +12,55 @@ const onCanvasMouseMove = (event) => {
         const dx = -event.movementX / document.body.clientWidth
         const dy = -event.movementY / document.body.clientHeight
 
-
-
-        const domain = Domain.translate(getDomain(), dx, dy)
-
-        state.center.x += dx * state.zoom
-        state.center.y += dy * state.zoom
+        state.view = Domain.translate(state.view, dx, dy)
     }
 }
 
 const onCanvasMouseWheel = (event) => {
 
-    const x = (event.clientX / document.body.clientWidth) - 0.5
-    const y = (event.clientY / document.body.clientHeight) - 0.5
+    const x = (event.clientX / document.body.clientWidth)
+    const y = (event.clientY / document.body.clientHeight)
 
     const factor = (event.wheelDeltaY > 0) ? 0.95 : 1.15
 
-    const mapWidth = state.zoom * state.aspectRatio
-    const mapHeight = state.zoom
-
-    const newZoom = state.zoom * factor
-
-    const newMapWidth = newZoom * state.aspectRatio
-    const newMapHeight = newZoom
-
-    state.center.x = state.center.x - (x * (newMapWidth - mapWidth))
-    state.center.y = state.center.y - (y * (newMapHeight - mapHeight))
-    state.zoom = newZoom
+    state.view = Domain.zoom(state.view, x, y, factor)
 }
 
-const getDomain = () => {
-    return {
-        left: state.center.x - (state.zoom * state.aspectRatio * 0.5),
-        right: state.center.x + (state.zoom * state.aspectRatio * 0.5),
-        top: state.center.y - (state.zoom * 0.5),
-        bottom: state.center.y + (state.zoom * 0.5)
-    }
+function ease(t) {
+    t--;
+    return (t * t * t + 1)
 }
 
 const onCanvasFlyTo = (toX, toY, zoom) => {
 
-    if (!state.flying) {
-
-        const fromDomain = Object.assign({}, state.domain)
-        const toDomain = Domain.zoom(state.domain, toX, toY, zoom)
-
-        state.flying = true
-
-        let flyFrac = 0
-        const flyStep = () => {
-
-            if (flyFrac < 1.0) {
-
-                state.domain = Domain.interpolate(fromDomain, toDomain, flyFrac)
-                flyFrac += 0.025
-
-                setTimeout(flyStep)
-            }
-            else {
-                state.flying = false
-            }
-        }
-
-        flyStep()
+    if (state.flying) {
+        clearTimeout(state.flying)
+        state.flying = undefined
     }
+
+    const fromDomain = Object.assign({}, state.view)
+    const toDomain = Domain.zoom(state.view, toX, toY, zoom)
+
+    let flyFrac = 0
+    const flyStep = () => {
+
+        if (flyFrac < 1.0) {
+
+            const dt = 0.075
+            const e = ease(flyFrac)
+
+            state.view = Domain.interpolate(fromDomain, toDomain, e)
+            flyFrac += dt
+
+            state.flying = setTimeout(flyStep)
+        }
+        else {
+
+            state.flying = undefined
+        }
+    }
+
+    state.flying = setTimeout(flyStep)
 }
 
 const onRenderSoftwareFrame = () => {
@@ -88,9 +73,7 @@ const onRenderSoftwareFrame = () => {
 
     const imageData = context.getImageData(0, 0, width, height)
 
-    const domain = getDomain()
-
-    Mandelbrot(imageData.data, width, height, state.time, state.iterations, domain)
+    Mandelbrot(imageData.data, width, height, state.time, state.iterations, state.view)
 
     context.putImageData(imageData, 0, 0)
 }
@@ -111,12 +94,7 @@ const onRenderFrame = () => {
 
 const onReset = () => {
 
-    state.domain = {
-        left: -1,
-        right: 1,
-        top: -1,
-        bottom: 1
-    }
+    state.view = Domain.identity()
 }
 
 const onWindowResize = () => {
@@ -196,7 +174,7 @@ const createCanvas = () => {
         const x = event.clientX / document.body.clientWidth
         const y = event.clientY / document.body.clientHeight
 
-        onCanvasFlyTo(x, y, 0.17)
+        onCanvasFlyTo(x, y, 0.1)
     })
 
     canvas.addEventListener('contextmenu', event => event.preventDefault())

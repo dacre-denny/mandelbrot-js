@@ -23,23 +23,22 @@ const onCanvasMouseMove = (event) => {
 
 const onCanvasMouseWheel = (event) => {
 
-    const x = event.clientX / document.body.clientWidth
-    const y = event.clientY / document.body.clientHeight
+    const x = (event.clientX / document.body.clientWidth) - 0.5
+    const y = (event.clientY / document.body.clientHeight) - 0.5
 
     const factor = (event.wheelDeltaY > 0) ? 0.95 : 1.15
 
-    const width = state.zoom * state.aspectRatio
-    const height = state.zoom
+    const mapWidth = state.zoom * state.aspectRatio
+    const mapHeight = state.zoom
 
-    const ox = (width * (x - 0.5)) + state.center.x
-    const lx = (state.center.x - ox) * factor + ox
+    const newZoom = state.zoom * factor
 
-    state.center.x = (state.center.x - ox) * factor + state.center.x
-    //state.center.y = state.center.y + (h * scale * (y - 0.5))
-    //state.zoom *= (event.wheelDeltaY > 0) ? 0.7 : 1.5
+    const newMapWidth = newZoom * state.aspectRatio
+    const newMapHeight = newZoom
 
-    //state.zoom = scale
-    console.log(state)
+    state.center.x = state.center.x - (x * (newMapWidth - mapWidth))
+    state.center.y = state.center.y - (y * (newMapHeight - mapHeight))
+    state.zoom = newZoom
 }
 
 const getDomain = () => {

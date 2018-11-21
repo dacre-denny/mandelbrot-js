@@ -5,6 +5,11 @@ import WebGL from './webgl'
 
 let context = null
 
+const easeOutCubic = (t) => {
+    t--;
+    return (t * t * t + 1)
+}
+
 const onCanvasMouseMove = (event) => {
 
     if (event.buttons > 0) {
@@ -21,46 +26,30 @@ const onCanvasMouseWheel = (event) => {
     const x = (event.clientX / document.body.clientWidth)
     const y = (event.clientY / document.body.clientHeight)
 
-    const factor = (event.wheelDeltaY > 0) ? 0.95 : 1.15
+    const factor = (event.wheelDeltaY > 0) ? 0.75 : 1.25
 
-    state.view = Domain.zoom(state.view, x, y, factor)
+    animateToView(Domain.zoom(state.view, x, y, factor))
 }
 
-function ease(t) {
-    t--;
-    return (t * t * t + 1)
-}
-
-const onCanvasFlyTo = (toDomain) => {
+const animateToView = (viewEnd) => {
 
     if (state.flying) {
         clearTimeout(state.flying)
         state.flying = undefined
     }
 
-    const fromDomain = Object.assign({}, state.view)
-    // const toDomain = Domain.zoom(state.view, toX, toY, zoom)
+    const SPEED = 0.1
+    const viewStart = Object.assign({}, state.view)
 
-    let flyFrac = 0
-    const flyStep = () => {
+    const iteration = (time) => {
 
-        if (flyFrac < 1.0) {
+        const nextTime = Math.min(1.0, time + SPEED)
 
-            const dt = 0.075
-            const e = ease(flyFrac)
-
-            state.view = Domain.interpolate(fromDomain, toDomain, e)
-            flyFrac += dt
-
-            state.flying = setTimeout(flyStep)
-        }
-        else {
-
-            state.flying = undefined
-        }
+        state.view = Domain.interpolate(viewStart, viewEnd, easeOutCubic(nextTime))
+        state.flying = (time < 1.0) ? setTimeout(iteration, 10, nextTime) : undefined
     }
 
-    state.flying = setTimeout(flyStep)
+    state.flying = setTimeout(iteration, 0, 0)
 }
 
 const onRenderSoftwareFrame = () => {
@@ -94,7 +83,7 @@ const onRenderFrame = () => {
 
 const onReset = () => {
 
-    onCanvasFlyTo(Domain.identity())
+    animateToView(Domain.identity())
 }
 
 const onWindowResize = () => {
@@ -174,8 +163,7 @@ const createCanvas = () => {
         const x = event.clientX / document.body.clientWidth
         const y = event.clientY / document.body.clientHeight
 
-
-        onCanvasFlyTo(Domain.zoom(state.view, x, y, 0.1))
+        animateToView(Domain.zoom(state.view, x, y, 0.1))
     })
 
     canvas.addEventListener('contextmenu', event => event.preventDefault())
@@ -194,7 +182,7 @@ export default {
     onRenderFrame,
     onCanvasMouseMove,
     onCanvasMouseWheel,
-    onCanvasFlyTo,
+    animateToView,
     onReset,
     onAnimateToggle,
     onToggleMode,

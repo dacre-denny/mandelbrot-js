@@ -28,8 +28,8 @@ const translate = (view, fracX, fracY) => {
     const dw = zoomWidth(view)
     const dh = zoomHeight(view)
 
-    const x = view.x + fracX * dw * view.zoom
-    const y = view.y + fracY * dh * view.zoom
+    const x = view.x + fracX * dw
+    const y = view.y + fracY * dh
 
     return {
         x,
@@ -42,7 +42,6 @@ const translate = (view, fracX, fracY) => {
 const lerp = (a, b, t) => ((b - a) * t + a)
 
 const interpolate = (fromDomain, toDomain, frac) => {
-
 
     const x = lerp(fromDomain.x, toDomain.x, frac)
     const y = lerp(fromDomain.y, toDomain.y, frac)
@@ -69,10 +68,10 @@ const zoomHeight = (view) => {
 
 const identity = () => {
     return {
-        x : 0,
-        y : 0,
-        aspectRatio : 1,
-        zoom : 1
+        x: 0,
+        y: 0,
+        aspectRatio: 1,
+        zoom: 1
     }
 }
 

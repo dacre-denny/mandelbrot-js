@@ -4,7 +4,7 @@ export default {
         x: 0,
         y: 0,
         zoom: 1,
-        aspectRatio: 1,
+        aspectRatio: 1
     },
 
     resolution: 300,

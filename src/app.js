@@ -1,13 +1,46 @@
 import Mandelbrot from './mandelbrot'
-import Domain from './domain'
+import View from './view'
 import state from './state'
 import WebGL from './webgl'
 
-let context = null
+let ctx = null
 
 const easeOutCubic = (t) => {
     t--;
     return (t * t * t + 1)
+}
+
+const cursorFracX = (event) => {
+
+    return event.clientX / document.body.clientWidth
+}
+
+const cursorFracY = (event) => {
+
+    return event.clientY / document.body.clientHeight
+}
+
+const animateToView = (viewEnd) => {
+
+    const SPEED = 0.1
+    const viewStart = Object.assign({}, state.view)
+
+    if (state.flying) {
+
+        clearTimeout(state.flying)
+        state.flying = undefined
+    }
+
+    const iteration = (time) => {
+
+        const nextTime = Math.min(1.0, time + SPEED)
+        const frac = easeOutCubic(nextTime)
+
+        state.view = View.interpolate(viewStart, viewEnd, frac)
+        state.flying = time < 1.0 ? setTimeout(iteration, 10, nextTime) : undefined
+    }
+
+    state.flying = setTimeout(iteration, 0, 0)
 }
 
 const onCanvasMouseMove = (event) => {
@@ -17,42 +50,29 @@ const onCanvasMouseMove = (event) => {
         const dx = -event.movementX / document.body.clientWidth
         const dy = -event.movementY / document.body.clientHeight
 
-        state.view = Domain.translate(state.view, dx, dy)
+        state.view = View.translate(state.view, dx, dy)
     }
 }
 
 const onCanvasMouseWheel = (event) => {
 
-    const x = (event.clientX / document.body.clientWidth)
-    const y = (event.clientY / document.body.clientHeight)
+    const x = cursorFracX(event)
+    const y = cursorFracY(event)
+    const scale = event.wheelDeltaY > 0 ? 0.75 : 1.25
 
-    const factor = (event.wheelDeltaY > 0) ? 0.75 : 1.25
-
-    animateToView(Domain.zoom(state.view, x, y, factor))
+    animateToView(View.zoom(state.view, x, y, scale))
 }
 
-const animateToView = (viewEnd) => {
+const onCanvasDoubleClick = (event) => {
 
-    if (state.flying) {
-        clearTimeout(state.flying)
-        state.flying = undefined
-    }
+    const x = cursorFracX(event)
+    const y = cursorFracY(event)
+    const scale = 0.1
 
-    const SPEED = 0.1
-    const viewStart = Object.assign({}, state.view)
-
-    const iteration = (time) => {
-
-        const nextTime = Math.min(1.0, time + SPEED)
-
-        state.view = Domain.interpolate(viewStart, viewEnd, easeOutCubic(nextTime))
-        state.flying = (time < 1.0) ? setTimeout(iteration, 10, nextTime) : undefined
-    }
-
-    state.flying = setTimeout(iteration, 0, 0)
+    animateToView(View.zoom(state.view, x, y, scale))
 }
 
-const onRenderSoftwareFrame = () => {
+const onRenderSoftwareFrame = (context) => {
 
     const width = context.canvas.width
     const height = context.canvas.height
@@ -70,10 +90,10 @@ const onRenderSoftwareFrame = () => {
 const onRenderFrame = () => {
 
     if (state.webgl) {
-        WebGL.render(context, state)
+        WebGL.render(ctx, state)
     }
     else {
-        onRenderSoftwareFrame()
+        onRenderSoftwareFrame(ctx)
     }
 
     if (state.animate) {
@@ -83,7 +103,7 @@ const onRenderFrame = () => {
 
 const onReset = () => {
 
-    animateToView(Domain.identity())
+    animateToView(View.identity())
 }
 
 const onWindowResize = () => {
@@ -136,7 +156,7 @@ const createCanvas = () => {
 
     for (const node of document.body.querySelectorAll('canvas')) { node.remove() }
 
-    context = null
+    ctx = null
 
     const canvas = document.createElement('canvas')
 
@@ -147,24 +167,18 @@ const createCanvas = () => {
 
     if (state.webgl) {
 
-        context = canvas.getContext('webgl')
-        WebGL.init(context)
+        ctx = canvas.getContext('webgl')
+        WebGL.init(ctx)
     }
     else {
-        context = canvas.getContext('2d')
+        ctx = canvas.getContext('2d')
     }
 
     canvas.addEventListener('mousemove', onCanvasMouseMove)
 
     canvas.addEventListener('mousewheel', onCanvasMouseWheel)
 
-    canvas.addEventListener('dblclick', event => {
-
-        const x = event.clientX / document.body.clientWidth
-        const y = event.clientY / document.body.clientHeight
-
-        animateToView(Domain.zoom(state.view, x, y, 0.1))
-    })
+    canvas.addEventListener('dblclick', onCanvasDoubleClick)
 
     canvas.addEventListener('contextmenu', event => event.preventDefault())
 
@@ -174,7 +188,6 @@ const createCanvas = () => {
 const onInit = () => {
 
     createCanvas()
-
 }
 
 export default {
@@ -182,6 +195,7 @@ export default {
     onRenderFrame,
     onCanvasMouseMove,
     onCanvasMouseWheel,
+    onCanvasDoubleClick,
     animateToView,
     onReset,
     onAnimateToggle,

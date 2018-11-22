@@ -2,6 +2,7 @@ import Mandelbrot from './mandelbrot'
 import View from './view'
 import state from './state'
 import WebGL from './webgl'
+import * as UI from './ui'
 
 let ctx = null
 
@@ -93,8 +94,6 @@ const onRenderFrame = () => {
     canvas.width = document.body.clientWidth * state.resolution
     canvas.height = document.body.clientHeight * state.resolution
 
-    console.log(canvas.width)
-
     if (state.webgl) {
         WebGL.render(ctx, state)
     }
@@ -122,31 +121,14 @@ const onChangeIterations = (event) => {
     state.iterations = parseInt(event.currentTarget.value)
 }
 
-const updateUI = () => {
-
-    // document.getElementById('animate').classList.toggle('toggled', state.animate)
-    // document.getElementById('mode').classList.toggle('toggled', state.webgl)
-
-    // if (state.webgl) {
-    //     document.getElementById('iterations').setAttribute('disabled', 'disabled')
-    // }
-    // else {
-    //     document.getElementById('iterations').removeAttribute('disabled')
-    // }
-}
-
 const onAnimateToggle = () => {
 
     state.animate = !state.animate
-
-    updateUI()
 }
 
 const onToggleMode = () => {
 
     state.webgl = !state.webgl
-
-    updateUI()
 
     createCanvas()
 }
@@ -182,43 +164,17 @@ const createCanvas = () => {
     canvas.addEventListener('contextmenu', event => event.preventDefault())
 }
 
-const initSlider = (id, value, onChange) => {
-
-    const element = document.getElementById(id)
-
-    element.value = value
-
-    element.addEventListener('change', onChange)
-}
-
-const initToggle = (id, value, onToggle) => {
-
-    const element = document.getElementById(id)
-
-    element.classList.toggle('toggled', value)
-
-    element.addEventListener('click', () => {
-
-        value = !value
-        element.classList.toggle('toggled', value)
-
-        onToggle()
-    })
-}
-
 const onInit = () => {
 
     document.getElementById('reset').addEventListener('click', onReset)
 
-    initToggle('animate', state.animate, onAnimateToggle)
-    initToggle('mode', state.webgl, onToggleMode)
+    UI.createToggle('animate', state.animate, onAnimateToggle)
+    UI.createToggle('mode', state.webgl, onToggleMode)
 
-    initSlider('resolution', state.resolution, onChangeResoultion)
-    initSlider('iterations', state.iterations, onChangeIterations)
+    UI.createSlider('resolution', state.resolution, onChangeResoultion)
+    UI.createSlider('iterations', state.iterations, onChangeIterations)
 
     createCanvas()
-
-    updateUI()
 
     const onRequestAnimationFrame = () => {
 

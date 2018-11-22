@@ -62,7 +62,7 @@ canvas {
     div {
         
         margin-top: 1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
 
         label {
             color:#4c4c4c;
@@ -79,7 +79,7 @@ canvas {
             outline: none;
 
             &:disabled {
-                opacity: 0.15;
+                opacity: 0.5;
                 pointer-events: none;
             }
 
@@ -92,13 +92,18 @@ canvas {
                     height: 20px;
                     width: 10px;
                     background: #ffeb00;
-                    margin-top: -8px;
                     border-radius: 2px;
+                }
+
+                &:disabled {
+                    &::-webkit-slider-thumb {
+                        background: #444444;                        
+                    }
                 }
 
                 &::-webkit-slider-runnable-track {  
                     background: #090909;
-                    height:2px;
+                    height:20px;
                 }
             }
 

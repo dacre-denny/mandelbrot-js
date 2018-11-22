@@ -8,7 +8,7 @@ const zoom = (view, fracX, fracY, factor) => {
 
     const newZoom = view.zoom * factor
 
-    const newMapWidth = newZoom * view.aspectRatio
+    const newMapWidth = newZoom * aspectRatio()
     const newMapHeight = newZoom
 
     const x = view.x - (fracX * (newMapWidth - mapWidth))
@@ -18,8 +18,7 @@ const zoom = (view, fracX, fracY, factor) => {
     return {
         x,
         y,
-        zoom,
-        aspectRatio: view.aspectRatio
+        zoom
     }
 }
 
@@ -34,8 +33,7 @@ const translate = (view, fracX, fracY) => {
     return {
         x,
         y,
-        zoom: view.zoom,
-        aspectRatio: view.aspectRatio
+        zoom: view.zoom
     }
 }
 
@@ -46,19 +44,22 @@ const interpolate = (fromDomain, toDomain, frac) => {
     const x = lerp(fromDomain.x, toDomain.x, frac)
     const y = lerp(fromDomain.y, toDomain.y, frac)
     const zoom = lerp(fromDomain.zoom, toDomain.zoom, frac)
-    const aspectRatio = lerp(fromDomain.aspectRatio, toDomain.aspectRatio, frac)
 
     return {
         x,
         y,
-        zoom,
-        aspectRatio
+        zoom
     }
+}
+
+const aspectRatio = () => {
+
+    return document.body.clientWidth / document.body.clientHeight
 }
 
 const zoomWidth = (view) => {
 
-    return view.zoom * view.aspectRatio
+    return view.zoom * aspectRatio()
 }
 
 const zoomHeight = (view) => {
@@ -68,10 +69,9 @@ const zoomHeight = (view) => {
 
 const identity = () => {
     return {
-        x: 0,
+        x: -0.5,
         y: 0,
-        aspectRatio: 1,
-        zoom: 1
+        zoom: 3
     }
 }
 
@@ -82,4 +82,5 @@ export default {
     interpolate,
     zoomWidth,
     zoomHeight,
+    aspectRatio
 }

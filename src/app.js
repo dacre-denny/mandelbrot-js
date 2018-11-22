@@ -112,11 +112,6 @@ const onReset = () => {
     animateToView(View.identity())
 }
 
-const onWindowResize = () => {
-
-    state.view.aspectRatio = document.body.clientWidth / document.body.clientHeight
-}
-
 const onChangeResoultion = (event) => {
 
     state.resolution = parseFloat(event.currentTarget.value)
@@ -129,15 +124,15 @@ const onChangeIterations = (event) => {
 
 const updateUI = () => {
 
-    document.getElementById('animate').classList.toggle('toggled', state.animate)
-    document.getElementById('mode').classList.toggle('toggled', state.webgl)
+    // document.getElementById('animate').classList.toggle('toggled', state.animate)
+    // document.getElementById('mode').classList.toggle('toggled', state.webgl)
 
-    if (state.webgl) {
-        document.getElementById('iterations').setAttribute('disabled', 'disabled')
-    }
-    else {
-        document.getElementById('iterations').removeAttribute('disabled')
-    }
+    // if (state.webgl) {
+    //     document.getElementById('iterations').setAttribute('disabled', 'disabled')
+    // }
+    // else {
+    //     document.getElementById('iterations').removeAttribute('disabled')
+    // }
 }
 
 const onAnimateToggle = () => {
@@ -185,8 +180,6 @@ const createCanvas = () => {
     canvas.addEventListener('dblclick', onCanvasDoubleClick)
 
     canvas.addEventListener('contextmenu', event => event.preventDefault())
-
-    onWindowResize()
 }
 
 const initSlider = (id, value, onChange) => {
@@ -202,9 +195,15 @@ const initToggle = (id, value, onToggle) => {
 
     const element = document.getElementById(id)
 
-    element.value = value
+    element.classList.toggle('toggled', value)
 
-    element.addEventListener('click', onToggle)
+    element.addEventListener('click', () => {
+
+        value = !value
+        element.classList.toggle('toggled', value)
+
+        onToggle()
+    })
 }
 
 const onInit = () => {
@@ -216,7 +215,6 @@ const onInit = () => {
 
     initSlider('resolution', state.resolution, onChangeResoultion)
     initSlider('iterations', state.iterations, onChangeIterations)
-    window.addEventListener('resize', onWindowResize)
 
     createCanvas()
 
@@ -242,6 +240,5 @@ export default {
     onAnimateToggle,
     onToggleMode,
     onChangeResoultion,
-    onChangeIterations,
-    onWindowResize
+    onChangeIterations
 }

@@ -3,8 +3,7 @@ export default {
     view: {
         x: -0.5,
         y: 0,
-        zoom: 3,
-        aspectRatio: 1
+        zoom: 3
     },
 
     ui: {

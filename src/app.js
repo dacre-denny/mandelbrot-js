@@ -4,9 +4,10 @@ import state from './state'
 import WebGL from './webgl'
 import * as UI from './ui'
 
-let ctx = null
+let context = null
 
 const easeOutCubic = (t) => {
+
     t--;
     return (t * t * t + 1)
 }
@@ -42,6 +43,32 @@ const animateToView = (viewEnd) => {
     }
 
     state.flying = setTimeout(iteration, 0, 0)
+}
+
+const loadCanvas = (isWebGL) => {
+
+    for (const node of document.body.querySelectorAll('canvas')) {
+
+        node.remove()
+    }
+
+    const canvas = document.createElement('canvas')
+    canvas.addEventListener('mousemove', onCanvasMouseMove)
+    canvas.addEventListener('mousewheel', onCanvasMouseWheel)
+    canvas.addEventListener('dblclick', onCanvasDoubleClick)
+    canvas.addEventListener('contextmenu', event => event.preventDefault())
+
+    document.body.appendChild(canvas)
+
+    if (isWebGL) {
+
+        context = canvas.getContext('webgl')
+        WebGL.init(context)
+    }
+    else {
+
+        context = canvas.getContext('2d')
+    }
 }
 
 const onCanvasMouseMove = (event) => {
@@ -91,14 +118,14 @@ const onRenderSoftwareFrame = (context) => {
 const onRenderFrame = () => {
 
     const canvas = document.querySelector('canvas')
-    canvas.width = document.body.clientWidth * state.resolution
-    canvas.height = document.body.clientHeight * state.resolution
+    canvas.width = parseInt(document.body.clientWidth * state.resolution)
+    canvas.height = parseInt(document.body.clientHeight * state.resolution)
 
     if (state.webgl) {
-        WebGL.render(ctx, state)
+        WebGL.render(context, state, View.aspectRatio())
     }
     else {
-        onRenderSoftwareFrame(ctx)
+        onRenderSoftwareFrame(context)
     }
 
     if (state.animate) {
@@ -130,43 +157,12 @@ const onToggleMode = () => {
 
     state.webgl = !state.webgl
 
-    createCanvas()
-}
-
-const createCanvas = () => {
-
-    for (const node of document.body.querySelectorAll('canvas')) { node.remove() }
-
-    ctx = null
-
-    const canvas = document.createElement('canvas')
-
-    canvas.width = state.resolution
-    canvas.height = state.resolution
-
-    document.body.appendChild(canvas)
-
-    if (state.webgl) {
-
-        ctx = canvas.getContext('webgl')
-        WebGL.init(ctx)
-    }
-    else {
-        ctx = canvas.getContext('2d')
-    }
-
-    canvas.addEventListener('mousemove', onCanvasMouseMove)
-
-    canvas.addEventListener('mousewheel', onCanvasMouseWheel)
-
-    canvas.addEventListener('dblclick', onCanvasDoubleClick)
-
-    canvas.addEventListener('contextmenu', event => event.preventDefault())
+    loadCanvas(state.webgl)
 }
 
 const onInit = () => {
 
-    document.getElementById('reset').addEventListener('click', onReset)
+    UI.createButton('reset', onReset)
 
     UI.createToggle('animate', state.animate, onAnimateToggle)
     UI.createToggle('mode', state.webgl, onToggleMode)
@@ -174,7 +170,7 @@ const onInit = () => {
     UI.createSlider('resolution', state.resolution, onChangeResoultion)
     UI.createSlider('iterations', state.iterations, onChangeIterations)
 
-    createCanvas()
+    loadCanvas(state.webgl)
 
     const onRequestAnimationFrame = () => {
 

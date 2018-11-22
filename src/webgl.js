@@ -1,34 +1,30 @@
-let buffer = null
-let program = null
+let quadBuffer = null
+let mandelbrotProgram = null
 
 const init = (gl) => {
 
-    buffer = initBuffer(gl)
+    quadBuffer = createQuadBuffer(gl)
 
-    program = initShader(gl)
+    mandelbrotProgram = createMandelbrotProgram(gl)
 }
 
-const initBuffer = (gl) => {
+const createQuadBuffer = (gl) => {
 
     const positionBuffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-    const positions = [
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
         -1.0, 1.0,
         1.0, 1.0,
         -1, -1.0,
         1.0, -1.0,
-    ];
-
-    gl.bufferData(gl.ARRAY_BUFFER,
-        new Float32Array(positions),
-        gl.STATIC_DRAW);
+    ]), gl.STATIC_DRAW);
 
     return positionBuffer
 }
 
-function loadShader(gl, type, source) {
+const createShader = (gl, type, source) => {
     const shader = gl.createShader(type);
 
     gl.shaderSource(shader, source);
@@ -43,80 +39,83 @@ function loadShader(gl, type, source) {
     return shader;
 }
 
-const initShader = (gl) => {
+const createMandelbrotProgram = (gl) => {
 
-    const vertexShader = loadShader(gl, gl.VERTEX_SHADER, `
-    precision highp float;
+    const vertexSrc =
+        `
+precision highp float;
 
-    attribute vec2 aVertexPosition;
+attribute vec2 vertexPosition;
 
-    varying vec2 vUV; 
+varying vec2 vUV; 
 
 
-    void main() {
+void main() {
 
-        vUV = ((aVertexPosition + vec2(1.0,-1.0)) * 0.5) * vec2(1.0,-1.0);
-        gl_Position =  vec4(aVertexPosition.xy, 0.0, 1.0);
-    }
-`);
-    const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, `
-    precision highp float;
+    vUV = ((vertexPosition + vec2(1.0,-1.0)) * 0.5) * vec2(1.0,-1.0);
+    gl_Position =  vec4(vertexPosition.xy, 0.0, 1.0);
+}
+`
+    const fragmentSrc =
+        `
+precision highp float;
+
+uniform vec4 view;
+uniform float phase;
+varying vec2 vUV;  
+
+vec4 getColor(float t) {
     
-    uniform vec4 domain;
-    uniform float phase;
-    varying vec2 vUV;  
+    return vec4(
+        (cos(t) + 1.0) * 0.5,
+        (sin(t + 3.1415) + 1.0) * 0.5,
+        (sin(t) + 1.0) * 0.5,
+        1.0
+    );
+}
 
-    vec4 getColor(float t) {
+void main() {
+
+    vec4 color = vec4(0.0,0.0,0.0,1.0); 
+
+    float COMPx = 0.0;
+    float COMPy = 0.0;
+    float z = 0.0;
+
+    float zoom = view.z;
+    float width = zoom; // * view.w;
+    float height = zoom;
+    
+    float left = view.x - width * 0.5;
+    float top = view.y - width * 0.5;  
+
+    float factorX = width / 1.0;
+    float factorY = height / 1.0;
+
+   for(float i = 0.0; i < 1.0; i += (1.0 / 200.0)) {
+
+        float x = (vUV.x * factorX) + left;
+        float y = (vUV.y * factorY) + top;
         
-        return vec4(
-            (cos(t) + 1.0) * 0.5,
-            (sin(t + 3.1415) + 1.0) * 0.5,
-            (sin(t) + 1.0) * 0.5,
-            1.0
-        );
-    }
+        float COMPx_new = COMPx * COMPx - COMPy * COMPy + x;
+        float COMPy_new = 2.0 * COMPx * COMPy + y;
+        float zN = (COMPx_new + COMPy_new);
 
-    void main() {
-
-        vec4 color = vec4(0.0,0.0,0.0,1.0); 
-
-        float COMPx = 0.0;
-        float COMPy = 0.0;
-        float z = 0.0;
-
-        float left = domain.x;
-        float right = domain.y;
-        float top = domain.z;
-        float bottom = domain.w;
-
-        float domainWidth = right - left;
-        float domainHeight = bottom - top;
-
-        float factorX = domainWidth / 1.0;
-        float factorY = domainHeight / 1.0;
-
-       for(float i = 0.0; i < 1.0; i += (1.0 / 200.0)) {
-
-            float x = (vUV.x * factorX) + left;
-            float y = (vUV.y * factorY) + top;
-            
-            float COMPx_new = COMPx * COMPx - COMPy * COMPy + x;
-            float COMPy_new = 2.0 * COMPx * COMPy + y;
-            float zN = (COMPx_new + COMPy_new);
-
-            if (abs(zN - z) > 5.0) {
-                color = getColor(i * 10.0 + phase);
-                break;
-            }
-
-            COMPx = COMPx_new;
-            COMPy = COMPy_new;
-            z = zN;
+        if (abs(zN - z) > 5.0) {
+            color = getColor(i * 10.0 + phase);
+            break;
         }
 
-        gl_FragColor = color;
+        COMPx = COMPx_new;
+        COMPy = COMPy_new;
+        z = zN;
     }
-`);
+
+    gl_FragColor = color;
+}
+`
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSrc);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
 
     const shaderProgram = gl.createProgram();
     gl.attachShader(shaderProgram, vertexShader);
@@ -124,55 +123,58 @@ const initShader = (gl) => {
     gl.linkProgram(shaderProgram);
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        return null;
+        return;
     }
 
     return {
         program: shaderProgram,
         attribLocations: {
-            vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+            vertexPosition: gl.getAttribLocation(shaderProgram, 'vertexPosition'),
         },
         uniformLocations: {
-            domain: gl.getUniformLocation(shaderProgram, 'domain'),
+            view: gl.getUniformLocation(shaderProgram, 'view'),
             phase: gl.getUniformLocation(shaderProgram, 'phase'),
         }
     };
 }
 
-const render = (gl, state) => {
+const bindMandelbrotProgram = (gl, state, aspectRatio) => {
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+    gl.vertexAttribPointer(
+        mandelbrotProgram.attribLocations.vertexPosition,
+        2,
+        gl.FLOAT,
+        false,
+        0,
+        0);
+    gl.enableVertexAttribArray(
+        mandelbrotProgram.attribLocations.vertexPosition);
+
+    gl.useProgram(mandelbrotProgram.program);
+
+    gl.uniform4fv(
+        mandelbrotProgram.uniformLocations.view,
+        [state.view.x, state.view.y, state.view.zoom, aspectRatio]);
+
+    gl.uniform1f(
+        mandelbrotProgram.uniformLocations.phase,
+        state.time);
+}
+
+const render = (gl, state, aspectRatio) => {
 
     gl.clearColor(1.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    {
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.vertexAttribPointer(
-            program.attribLocations.vertexPosition,
-            2,
-            gl.FLOAT,
-            false,
-            0,
-            0);
-        gl.enableVertexAttribArray(
-            program.attribLocations.vertexPosition);
-    }
-
-    gl.useProgram(program.program);
-
-    gl.uniform4fv(
-        program.uniformLocations.domain,
-        [state.domain.left, state.domain.right, state.domain.top, state.domain.bottom]);
-
-    gl.uniform1f(
-        program.uniformLocations.phase,
-        state.time);
+    bindMandelbrotProgram(gl, state, aspectRatio)
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
 
 export default {
-    initBuffer,
-    initShader,
+    createQuadBuffer,
+    createMandelbrotProgram,
     init,
     render
 }

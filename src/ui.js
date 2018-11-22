@@ -21,3 +21,10 @@ export const createToggle = (id, value, onToggle) => {
         onToggle()
     })
 }
+
+export const createButton = (id, onClick) => {
+
+    const element = document.getElementById(id)
+
+    element.addEventListener('click', onClick)
+}

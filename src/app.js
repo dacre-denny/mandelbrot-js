@@ -136,7 +136,6 @@ const onRenderFrame = () => {
     else {
         onRenderSoftwareFrame(context)
     }
-    console.log(canvas.width, canvas.height)
 
     if (state.animate) {
         state.time = (Date.now() / 1000.0) % 1000
@@ -168,6 +167,8 @@ const onToggleMode = () => {
     state.webgl = !state.webgl
 
     loadCanvas(state.webgl)
+
+    UI.toggleDisabled('iterations', state.webgl)
 }
 
 const onInit = () => {
@@ -179,6 +180,8 @@ const onInit = () => {
 
     UI.createSlider('resolution', state.resolution, onChangeResoultion)
     UI.createSlider('iterations', state.iterations, onChangeIterations)
+
+    UI.toggleDisabled('iterations', state.webgl)
 
     loadCanvas(state.webgl)
 

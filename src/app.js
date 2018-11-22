@@ -118,8 +118,17 @@ const onRenderSoftwareFrame = (context) => {
 const onRenderFrame = () => {
 
     const canvas = document.querySelector('canvas')
-    canvas.width = parseInt(document.body.clientWidth * state.resolution)
-    canvas.height = parseInt(document.body.clientHeight * state.resolution)
+
+    const width = parseInt(document.body.clientWidth * state.resolution)
+    const height = parseInt(document.body.clientHeight * state.resolution)
+
+    if (canvas.width !== width) {
+        canvas.width = width
+    }
+
+    if (canvas.height !== height) {
+        canvas.height = height
+    }
 
     if (state.webgl) {
         WebGL.render(context, state, View.aspectRatio())
@@ -127,6 +136,7 @@ const onRenderFrame = () => {
     else {
         onRenderSoftwareFrame(context)
     }
+    console.log(canvas.width, canvas.height)
 
     if (state.animate) {
         state.time = (Date.now() / 1000.0) % 1000

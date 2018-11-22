@@ -15,5 +15,5 @@ export default {
     animate: false,
 
     flying: false,
-    time: Date.now()
+    time: 0
 }

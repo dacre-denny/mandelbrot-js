@@ -17,7 +17,7 @@ const createQuadBuffer = (gl) => {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
         -1.0, 1.0,
         1.0, 1.0,
-        -1, -1.0,
+        -1.0, -1.0,
         1.0, -1.0,
     ]), gl.STATIC_DRAW);
 
@@ -49,10 +49,12 @@ attribute vec2 vertexPosition;
 
 varying vec2 vUV; 
 
-
 void main() {
 
-    vUV = ((vertexPosition + vec2(1.0,-1.0)) * 0.5) * vec2(1.0,-1.0);
+    float x = vertexPosition.x;
+    float y = -vertexPosition.y;
+
+    vUV = vec2(x, y);
     gl_Position =  vec4(vertexPosition.xy, 0.0, 1.0);
 }
 `
@@ -61,8 +63,11 @@ void main() {
 precision highp float;
 
 uniform vec4 view;
+uniform vec2 screen;
 uniform float phase;
 varying vec2 vUV;  
+
+#define ITERATIONS 400.0
 
 vec4 getColor(float t) {
     
@@ -83,7 +88,7 @@ void main() {
     float z = 0.0;
 
     float zoom = view.z;
-    float width = zoom; // * view.w;
+    float width = zoom * view.w;
     float height = zoom;
     
     float left = view.x - width * 0.5;
@@ -92,7 +97,7 @@ void main() {
     float factorX = width / 1.0;
     float factorY = height / 1.0;
 
-   for(float i = 0.0; i < 1.0; i += (1.0 / 200.0)) {
+   for(float i = 0.0; i < 1.0; i += (1.0 / ITERATIONS)) {
 
         float x = (vUV.x * factorX) + left;
         float y = (vUV.y * factorY) + top;
@@ -133,6 +138,7 @@ void main() {
         },
         uniformLocations: {
             view: gl.getUniformLocation(shaderProgram, 'view'),
+            screen: gl.getUniformLocation(shaderProgram, 'screen'),
             phase: gl.getUniformLocation(shaderProgram, 'phase'),
         }
     };
@@ -157,6 +163,10 @@ const bindMandelbrotProgram = (gl, state, aspectRatio) => {
         mandelbrotProgram.uniformLocations.view,
         [state.view.x, state.view.y, state.view.zoom, aspectRatio]);
 
+    gl.uniform2fv(
+        mandelbrotProgram.uniformLocations.screen,
+        [gl.canvas.width, gl.canvas.height]);
+
     gl.uniform1f(
         mandelbrotProgram.uniformLocations.phase,
         state.time);
@@ -164,7 +174,8 @@ const bindMandelbrotProgram = (gl, state, aspectRatio) => {
 
 const render = (gl, state, aspectRatio) => {
 
-    gl.clearColor(1.0, 0.0, 0.0, 1.0);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+    gl.clearColor(1.0, 1.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     bindMandelbrotProgram(gl, state, aspectRatio)

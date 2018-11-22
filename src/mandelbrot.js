@@ -16,7 +16,7 @@ export default (buffer, width, height, phase, iterations, view) => {
 
     const domainWidth = Domain.zoomWidth(view)
     const domainHeight = Domain.zoomHeight(view)
-
+ 
     const domainLeft = view.x - domainWidth * 0.5
     const domainTop = view.y - domainHeight * 0.5
 

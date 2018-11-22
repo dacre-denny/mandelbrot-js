@@ -89,6 +89,12 @@ const onRenderSoftwareFrame = (context) => {
 
 const onRenderFrame = () => {
 
+    const canvas = document.querySelector('canvas')
+    canvas.width = document.body.clientWidth * state.resolution
+    canvas.height = document.body.clientHeight * state.resolution
+
+    console.log(canvas.width)
+
     if (state.webgl) {
         WebGL.render(ctx, state)
     }
@@ -108,12 +114,12 @@ const onReset = () => {
 
 const onWindowResize = () => {
 
-    state.aspectRatio = document.body.clientWidth / document.body.clientHeight
+    state.view.aspectRatio = document.body.clientWidth / document.body.clientHeight
 }
 
 const onChangeResoultion = (event) => {
 
-    state.resolution = parseInt(event.currentTarget.value)
+    state.resolution = parseFloat(event.currentTarget.value)
 }
 
 const onChangeIterations = (event) => {
@@ -121,33 +127,31 @@ const onChangeIterations = (event) => {
     state.iterations = parseInt(event.currentTarget.value)
 }
 
-const onAnimateToggle = (event) => {
+const updateUI = () => {
 
-    state.animate = !state.animate
+    document.getElementById('animate').classList.toggle('toggled', state.animate)
+    document.getElementById('mode').classList.toggle('toggled', state.webgl)
 
-    const classList = event.currentTarget.classList
-
-    if (state.animate) {
-        classList.add('toggled')
-    }
-    else {
-        classList.remove('toggled')
-    }
-}
-
-const onToggleMode = (event) => {
-
-    state.webgl = !state.webgl
-
-    const classList = event.currentTarget.classList
     if (state.webgl) {
-        classList.add('toggled')
         document.getElementById('iterations').setAttribute('disabled', 'disabled')
     }
     else {
-        classList.remove('toggled')
         document.getElementById('iterations').removeAttribute('disabled')
     }
+}
+
+const onAnimateToggle = () => {
+
+    state.animate = !state.animate
+
+    updateUI()
+}
+
+const onToggleMode = () => {
+
+    state.webgl = !state.webgl
+
+    updateUI()
 
     createCanvas()
 }
@@ -185,9 +189,46 @@ const createCanvas = () => {
     onWindowResize()
 }
 
+const initSlider = (id, value, onChange) => {
+
+    const element = document.getElementById(id)
+
+    element.value = value
+
+    element.addEventListener('change', onChange)
+}
+
+const initToggle = (id, value, onToggle) => {
+
+    const element = document.getElementById(id)
+
+    element.value = value
+
+    element.addEventListener('click', onToggle)
+}
+
 const onInit = () => {
 
+    document.getElementById('reset').addEventListener('click', onReset)
+
+    initToggle('animate', state.animate, onAnimateToggle)
+    initToggle('mode', state.webgl, onToggleMode)
+
+    initSlider('resolution', state.resolution, onChangeResoultion)
+    initSlider('iterations', state.iterations, onChangeIterations)
+    window.addEventListener('resize', onWindowResize)
+
     createCanvas()
+
+    updateUI()
+
+    const onRequestAnimationFrame = () => {
+
+        onRenderFrame()
+        requestAnimationFrame(onRequestAnimationFrame)
+    }
+
+    onRequestAnimationFrame()
 }
 
 export default {

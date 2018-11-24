@@ -52,9 +52,9 @@ varying vec2 vUV;
 void main() {
 
     float x = vertexPosition.x;
-    float y = -vertexPosition.y;
+    float y = vertexPosition.y;
 
-    vUV = vec2(x, y);
+    vUV = vec2(x, -y) * 0.5 + vec2(0.5, 0.5);
     gl_Position =  vec4(vertexPosition.xy, 0.0, 1.0);
 }
 `
@@ -92,7 +92,7 @@ void main() {
     float height = zoom;
     
     float left = view.x - width * 0.5;
-    float top = view.y - width * 0.5;  
+    float top = view.y - height * 0.5;  
 
     float factorX = width / 1.0;
     float factorY = height / 1.0;

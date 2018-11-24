@@ -63,7 +63,7 @@ const loadCanvas = (isWebGL) => {
     if (isWebGL) {
 
         context = canvas.getContext('webgl')
-        WebGL.init(context)
+        WebGL.init(context, state.iterations)
     }
     else {
 
@@ -155,6 +155,10 @@ const onChangeResoultion = (event) => {
 const onChangeIterations = (event) => {
 
     state.iterations = parseInt(event.currentTarget.value)
+
+    if (state.webgl) {
+        WebGL.init(context, state.iterations)
+    }
 }
 
 const onAnimateToggle = () => {
@@ -167,8 +171,6 @@ const onToggleMode = () => {
     state.webgl = !state.webgl
 
     loadCanvas(state.webgl)
-
-    UI.toggleDisabled('iterations', state.webgl)
 }
 
 const onInit = () => {
@@ -180,8 +182,6 @@ const onInit = () => {
 
     UI.createSlider('resolution', state.resolution, onChangeResoultion)
     UI.createSlider('iterations', state.iterations, onChangeIterations)
-
-    UI.toggleDisabled('iterations', state.webgl)
 
     loadCanvas(state.webgl)
 

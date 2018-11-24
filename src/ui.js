@@ -28,17 +28,3 @@ export const createButton = (id, onClick) => {
 
     element.addEventListener('click', onClick)
 }
-
-export const toggleDisabled = (id, disabled) => {
-
-    const element = document.getElementById(id)
-
-    if (disabled) {
-
-        element.setAttribute('disabled', 'disabled')
-    }
-    else {
-
-        element.removeAttribute('disabled')
-    }
-}

@@ -1,11 +1,11 @@
 let quadBuffer = null
 let mandelbrotProgram = null
 
-const init = (gl) => {
+const init = (gl, iterations) => {
 
     quadBuffer = createQuadBuffer(gl)
 
-    mandelbrotProgram = createMandelbrotProgram(gl)
+    mandelbrotProgram = createMandelbrotProgram(gl, iterations)
 }
 
 const createQuadBuffer = (gl) => {
@@ -39,7 +39,7 @@ const createShader = (gl, type, source) => {
     return shader;
 }
 
-const createMandelbrotProgram = (gl) => {
+const createMandelbrotProgram = (gl, iterations) => {
 
     const vertexSrc =
         `
@@ -67,7 +67,7 @@ uniform vec2 screen;
 uniform float phase;
 varying vec2 vUV;  
 
-#define ITERATIONS 400.0
+#define ITERATIONS ${ iterations.toFixed(2)}
 
 vec4 getColor(float t) {
     
@@ -119,6 +119,7 @@ void main() {
     gl_FragColor = color;
 }
 `
+    console.log(fragmentSrc)
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSrc);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
 

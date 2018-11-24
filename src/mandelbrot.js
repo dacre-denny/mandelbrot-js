@@ -1,17 +1,12 @@
 import Domain from './view'
+import * as Helpers from './helpers'
 
-
-
-const sin = (phase) => {
-
-    
-}
 
 const colorTexel = (buffer, offset, phase) => {
 
-    const r = parseInt((Math.cos(phase) + 1) * .5 * 255)
-    const g = parseInt((Math.sin(phase + Math.PI) + 1) * .5 * 255)
-    const b = parseInt((Math.sin(phase) + 1) * .5 * 255)
+    const r = parseInt((Helpers.cos(phase) + 1) * .5 * 255)
+    const g = parseInt((Helpers.sin(phase + Math.PI) + 1) * .5 * 255)
+    const b = parseInt((Helpers.sin(phase) + 1) * .5 * 255)
 
     buffer[offset + 0] = r
     buffer[offset + 1] = g

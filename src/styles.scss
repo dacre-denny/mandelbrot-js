@@ -1,8 +1,7 @@
-@mixin fontface($fontsize:0.7rem, $textalign:center) {
+@mixin fontface($fontsize:0.7rem) {
     font-size: $fontsize;
     font-weight: bold;
     text-transform: uppercase; 
-    text-align: $textalign;
 }
 
 @mixin userselect_none {
@@ -46,6 +45,7 @@ form {
     background:$color-dark-background; 
     border-radius: $border-radius;
     padding:$spacing * 0.5;  
+    text-align: center;
     
     @include userselect_none();
     
@@ -75,8 +75,9 @@ label {
     color:$color-dark-text;
     display: block;
     margin-bottom: $spacing*0.5;
+    text-align: left;
 
-    @include fontface(0.55rem, left);
+    @include fontface(0.55rem);
 
 
 

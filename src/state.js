@@ -11,8 +11,8 @@ export default {
     },
     resolution: 0.5,
     iterations: 125,
-    webgl: !false,
-    animate: false,
+    webgl: false,
+    animate: !false,
 
     flying: false,
     time: 0

@@ -4,6 +4,7 @@ import state from './state'
 import WebGL from './webgl'
 import * as UI from './ui'
 import * as Helpers from './helpers'
+import * as Canvas from './canvas'
 
 let context = null
 
@@ -56,20 +57,23 @@ const loadCanvas = (isWebGL) => {
     document.body.appendChild(canvas)
 
     try {
+        if (isWebGL) {
+
+            context = WebGL.init(canvas, state.iterations)
+        }
+        else {
+
+            context = canvas.getContext('2d')
+        }
 
     }
     catch (err) {
         console.error(err)
-    }
 
-    if (isWebGL) {
-
-        context = WebGL.init(canvas, state.iterations)
-    }
-    else {
-
+        state.webgl = false
         context = canvas.getContext('2d')
     }
+
 }
 
 const onCanvasMouseMove = (event) => {

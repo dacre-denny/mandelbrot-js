@@ -187,10 +187,3 @@ export const render = (gl, state, aspectRatio) => {
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
-
-export default {
-    createQuadBuffer,
-    createMandelbrotProgram,
-    init,
-    render
-}

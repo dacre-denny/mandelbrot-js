@@ -1,22 +1,18 @@
-import Domain from './view'
+import * as View from './view'
 import * as Helpers from './helpers'
 
-const colorTexel = (buffer, offset, phase) => {
+const shadeTexel = (buffer, index, phase) => {
 
-    const r = parseInt((Helpers.cos(phase) + 1) * .5 * 255)
-    const g = parseInt((Helpers.sin(phase + Math.PI) + 1) * .5 * 255)
-    const b = parseInt((Helpers.sin(phase) + 1) * .5 * 255)
-
-    buffer[offset + 0] = r
-    buffer[offset + 1] = g
-    buffer[offset + 2] = b
-    buffer[offset + 3] = 255
+    buffer[index + 0] = (Helpers.cos(phase) + 1) * 125
+    buffer[index + 1] = (Helpers.sin(phase + Math.PI) + 1) * 125
+    buffer[index + 2] = (Helpers.sin(phase) + 1) * 125
+    buffer[index + 3] = 255
 }
 
-export const Mandelbrot = (buffer, width, height, phase, iterations, view) => {
+export const generateMandelbrot = (buffer, width, height, phase, iterations, view) => {
 
-    const domainWidth = Domain.zoomWidth(view)
-    const domainHeight = Domain.zoomHeight(view)
+    const domainWidth = View.zoomWidth(view)
+    const domainHeight = View.zoomHeight(view)
 
     const domainLeft = view.x - domainWidth * 0.5
     const domainTop = view.y - domainHeight * 0.5
@@ -42,7 +38,7 @@ export const Mandelbrot = (buffer, width, height, phase, iterations, view) => {
 
                 if (Math.abs(zN - z) > 5) {
                     const off = (j * width + k) * 4;
-                    colorTexel(buffer, off, i * 10 + phase)
+                    shadeTexel(buffer, off, i * 10 + phase)
                     break
                 }
 
@@ -66,7 +62,7 @@ export const onRenderSoftwareFrame = (context, state) => {
 
     const imageData = context.getImageData(0, 0, width, height)
 
-    Mandelbrot(imageData.data, width, height, state.time, state.iterations, state.view)
+    generateMandelbrot(imageData.data, width, height, state.time, state.iterations, state.view)
 
     context.putImageData(imageData, 0, 0)
 }

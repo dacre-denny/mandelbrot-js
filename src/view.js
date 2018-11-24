@@ -1,6 +1,6 @@
 import * as Helpers from './helpers'
 
-const zoom = (view, fracX, fracY, factor) => {
+export const zoom = (view, fracX, fracY, factor) => {
 
     fracX -= 0.5
     fracY -= 0.5
@@ -24,7 +24,7 @@ const zoom = (view, fracX, fracY, factor) => {
     }
 }
 
-const translate = (view, fracX, fracY) => {
+export const translate = (view, fracX, fracY) => {
 
     const dw = zoomWidth(view)
     const dh = zoomHeight(view)
@@ -39,7 +39,7 @@ const translate = (view, fracX, fracY) => {
     }
 }
 
-const interpolate = (fromDomain, toDomain, frac) => {
+export const interpolate = (fromDomain, toDomain, frac) => {
 
     const x = Helpers.lerp(fromDomain.x, toDomain.x, frac)
     const y = Helpers.lerp(fromDomain.y, toDomain.y, frac)
@@ -52,35 +52,25 @@ const interpolate = (fromDomain, toDomain, frac) => {
     }
 }
 
-const aspectRatio = () => {
+export const aspectRatio = () => {
 
     return document.body.clientWidth / document.body.clientHeight
 }
 
-const zoomWidth = (view) => {
+export const zoomWidth = (view) => {
 
     return view.zoom * aspectRatio()
 }
 
-const zoomHeight = (view) => {
+export const zoomHeight = (view) => {
 
     return view.zoom
 }
 
-const identity = () => {
+export const identity = () => {
     return {
         x: -0.5,
         y: 0,
         zoom: 3
     }
-}
-
-export default {
-    identity,
-    zoom,
-    translate,
-    interpolate,
-    zoomWidth,
-    zoomHeight,
-    aspectRatio
 }

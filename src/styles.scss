@@ -1,4 +1,4 @@
-@mixin facade {
+@mixin userselect_none {
     -webkit-touch-callout: none; 
     -webkit-user-select: none; 
      -khtml-user-select: none; 
@@ -7,12 +7,21 @@
             user-select: none; 
 }
 
+$color-primary-text: #ffeb00;
+$color-light-text: #eee;
+$color-dark-text: #4c4c4c;
+$color-dark-background: #151515;
+
+$spacing: 1rem;
+$border-radius: 0.1rem;
+
 body {
     margin:0;
     padding:0;
     width:100%;
     height:100%;
     position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 canvas {
@@ -24,34 +33,18 @@ canvas {
     left:0;
 }
 
-#credit {
-    position: fixed;
-    bottom:1rem;
-    right:1rem;
-    text-transform: uppercase;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color:#eeeeee; 
-    z-index: 1;
-    pointer-events: none;
-
-    @include facade()
-}
-
 #controls {
     position: fixed;
-    top:1rem;
-    right:1rem;
+    top:$spacing;
+    right:$spacing;
     z-index: 1;
-    background:#151515; 
-    border-radius: 3px;
-    padding:0.5rem; 
+    background:$color-dark-background; 
+    border-radius: $border-radius;
+    padding:$spacing * 0.5;  
     
     h1 { 
         font-size: 1rem;
-        font-family: Arial, Helvetica, sans-serif;
-        color:#4c4c4c;
+        color:$color-light-text;
         text-transform: uppercase;
         font-size: 0.7rem;
         font-weight: bold;
@@ -59,29 +52,37 @@ canvas {
         text-align: center;
     }
 
+    small {
+        display: block;
+        color:$color-dark-text;
+        font-size: .65rem; 
+        margin: 0;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
     div {
         
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
+        margin-top: $spacing;
+        margin-bottom: $spacing*0.5;
 
         label {
-            color:#4c4c4c;
+            color:$color-dark-text;
             font-size: 0.6rem;
             font-weight: bold;
-            text-transform: uppercase;
-            font-family: Arial, Helvetica, sans-serif;
+            text-transform: uppercase; 
             display: block;
-            margin-bottom: .5rem;
+            margin-bottom: $spacing*0.5;
         }
 
         input {
             margin:0;
             outline: none;
+            cursor: pointer;
 
-            &:disabled {
-                opacity: 0.5;
-                pointer-events: none;
-            }
+            &:hover {
+                opacity: 0.7;
+            } 
 
             &[type=range] { 
                 width:100%;
@@ -89,63 +90,37 @@ canvas {
 
                 &::-webkit-slider-thumb {
                     -webkit-appearance: none; 
-                    height: 20px;
+                    height: $spacing;
                     width: 10px;
-                    background: #ffeb00;
-                    border-radius: 2px;
-                }
-
-                &:disabled {
-                    &::-webkit-slider-thumb {
-                        background: #444444;                        
-                    }
-                }
+                    background: $color-primary-text;
+                    border-radius: $border-radius;
+                } 
 
                 &::-webkit-slider-runnable-track {  
-                    background: #090909;
-                    height:20px;
+                    background: darken($color-dark-background, 5%);
+                    height:$spacing;
                 }
             }
 
             &[type="button"] {
                 display: inline-block;
-                border-radius: 3px;
-                background: #222;
-                color:#eee;
+                border-radius: $border-radius;
+                background: lighten($color-dark-background, 5%);
+                color:$color-light-text;
                 text-transform: uppercase;
                 font-size: 0.7rem;
-                font-weight: bold;
-                font-family: Arial, Helvetica, sans-serif;
+                font-weight: bold; 
                 padding:0.25rem 1rem;
                 border:none;  
             }
 
             &.toggled {
-                background: #ffeb00;
-                color:#141414;
+                background: $color-primary-text;
+                color:$color-dark-text;
             }
-        }
-        
-    }
+        }  
+    } 
 
-    inputx {
-
-        height:22px;
-        display: inline-block;
-
-        &[type="button"] {
-            border-radius: 3px;
-            background: #222;
-            color:#eee;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            font-weight: bold;
-            font-family: Arial, Helvetica, sans-serif;
-            padding:0.25rem 1rem;
-            border:none;  
-        }
-    }
-
-    @include facade()
+    @include userselect_none()
 }
  

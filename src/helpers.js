@@ -1,6 +1,6 @@
-const precomputedCycle = []
-
 const PRECOMPUTATION_ITERATIONS = 10000
+
+const precomputedCycle = []
 
 const precomputeCycleIfNeeded = () => {
 

@@ -139,7 +139,7 @@ const onRenderFrame = () => {
         WebGL.render(context, state, View.aspectRatio())
     }
     else {
-        onRenderSoftwareFrame(context)
+        Canvas.onRenderSoftwareFrame(context, state)
     }
 
     if (state.animate) {

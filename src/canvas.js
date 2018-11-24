@@ -57,7 +57,12 @@ export const generateMandelbrot = (buffer, width, height, state) => {
     return buffer
 }
 
-export const onRenderSoftwareFrame = (context, state) => {
+export const createContext = (canvas) => {
+    
+    return canvas.getContext('2d')
+}
+
+export const renderFrame = (context, state) => {
 
     const width = context.canvas.width
     const height = context.canvas.height

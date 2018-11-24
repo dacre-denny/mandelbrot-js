@@ -56,23 +56,21 @@ const loadCanvas = (isWebGL) => {
 
     document.body.appendChild(canvas)
 
-    try {
-        if (isWebGL) {
-
-            context = WebGL.init(canvas, state.iterations)
+    if (isWebGL) {
+        try {
+            context = WebGL.createContext(canvas, state.iterations)
         }
-        else {
-
+        catch (err) {
+            console.error(err)
+            state.webgl = false
             context = canvas.getContext('2d')
         }
-
     }
-    catch (err) {
-        console.error(err)
+    else {
 
-        state.webgl = false
-        context = canvas.getContext('2d')
+        context = Canvas.createContext(canvas)
     }
+
 
 }
 
@@ -121,10 +119,10 @@ const onRenderFrame = () => {
     }
 
     if (state.webgl) {
-        WebGL.render(context, state, View.aspectRatio())
+        WebGL.renderFrame(context, state, View.aspectRatio())
     }
     else {
-        Canvas.onRenderSoftwareFrame(context, state)
+        Canvas.renderFrame(context, state)
     }
 
     if (state.animate) {

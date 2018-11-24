@@ -1,7 +1,7 @@
 let quadBuffer = null
 let mandelbrotProgram = null
 
-export const init = (canvas, iterations) => {
+export const createContext = (canvas, iterations) => {
 
     var gl = canvas.getContext('webgl')
 
@@ -177,7 +177,7 @@ const bindMandelbrotProgram = (gl, state, aspectRatio) => {
         state.time);
 }
 
-export const render = (gl, state, aspectRatio) => {
+export const renderFrame = (gl, state, aspectRatio) => {
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     gl.clearColor(1.0, 1.0, 0.0, 1.0);

@@ -105,21 +105,6 @@ const onCanvasDoubleClick = (event) => {
     animateToView(View.zoom(state.view, x, y, scale))
 }
 
-const onRenderSoftwareFrame = (context) => {
-
-    const width = context.canvas.width
-    const height = context.canvas.height
-
-    context.fillStyle = 'black';
-    context.fillRect(0, 0, width, height);
-
-    const imageData = context.getImageData(0, 0, width, height)
-
-    Mandelbrot(imageData.data, width, height, state.time, state.iterations, state.view)
-
-    context.putImageData(imageData, 0, 0)
-}
-
 const onRenderFrame = () => {
 
     const canvas = document.querySelector('canvas')
@@ -166,6 +151,15 @@ const onChangeIterations = (event) => {
     }
 }
 
+const onChangeDivergence = (event) => {
+
+    state.divergence = parseInt(event.currentTarget.value)
+
+    if (state.webgl) {
+        loadCanvas(state.webgl)
+    }
+}
+
 const onAnimateToggle = () => {
 
     state.animate = !state.animate
@@ -187,6 +181,7 @@ const onInit = () => {
 
     UI.createSlider('resolution', state.resolution, onChangeResoultion)
     UI.createSlider('iterations', state.iterations, onChangeIterations)
+    UI.createSlider('divergence', state.divergence, onChangeDivergence)
 
     loadCanvas(state.webgl)
 

@@ -1,4 +1,4 @@
-import Domain from './view'
+import * as Domain from './view'
 import * as Helpers from './helpers'
 
 

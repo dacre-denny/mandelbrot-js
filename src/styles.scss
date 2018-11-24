@@ -63,10 +63,14 @@ h1 {
     @include fontface();
 }
 
-small {
-    display: block;
+a { 
     color:$color-dark-text;
-    margin: 0;
+    margin: 0 0.25rem;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
     
     @include fontface(0.55rem);
 }
@@ -78,8 +82,6 @@ label {
     text-align: left;
 
     @include fontface(0.55rem);
-
-
 
     + span {
         position: absolute;

@@ -10,7 +10,8 @@ export default {
 
     },
     resolution: 0.5,
-    iterations: 125,
+    iterations: 15,
+    divergence: 15,
     webgl: false,
     animate: !false,
 

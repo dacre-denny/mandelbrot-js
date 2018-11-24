@@ -1,11 +1,15 @@
 let quadBuffer = null
 let mandelbrotProgram = null
 
-const init = (gl, iterations) => {
+const init = (canvas, iterations) => {
+
+    var gl = canvas.getContext('webgl')
 
     quadBuffer = createQuadBuffer(gl)
 
     mandelbrotProgram = createMandelbrotProgram(gl, iterations)
+
+    return gl
 }
 
 const createQuadBuffer = (gl) => {
@@ -119,7 +123,7 @@ void main() {
     gl_FragColor = color;
 }
 `
-    console.log(fragmentSrc)
+
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSrc);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
 

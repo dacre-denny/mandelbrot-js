@@ -3,14 +3,9 @@ import View from './view'
 import state from './state'
 import WebGL from './webgl'
 import * as UI from './ui'
+import * as Helpers from './helpers'
 
 let context = null
-
-const easeOutCubic = (t) => {
-
-    t--;
-    return (t * t * t + 1)
-}
 
 const cursorFracX = (event) => {
 
@@ -36,7 +31,7 @@ const animateToView = (viewEnd) => {
     const iteration = (time) => {
 
         const nextTime = Math.min(1.0, time + SPEED)
-        const frac = easeOutCubic(nextTime)
+        const frac = Helpers.easeOutCubic(nextTime)
 
         state.view = View.interpolate(viewStart, viewEnd, frac)
         state.flying = time < 1.0 ? setTimeout(iteration, 10, nextTime) : undefined
@@ -60,10 +55,16 @@ const loadCanvas = (isWebGL) => {
 
     document.body.appendChild(canvas)
 
+    try {
+
+    }
+    catch (err) {
+        console.error(err)
+    }
+
     if (isWebGL) {
 
-        context = canvas.getContext('webgl')
-        WebGL.init(context, state.iterations)
+        context = WebGL.init(canvas, state.iterations)
     }
     else {
 
@@ -157,7 +158,7 @@ const onChangeIterations = (event) => {
     state.iterations = parseInt(event.currentTarget.value)
 
     if (state.webgl) {
-        WebGL.init(context, state.iterations)
+        loadCanvas(state.webgl)
     }
 }
 

@@ -1,5 +1,12 @@
 import Domain from './view'
 
+
+
+const sin = (phase) => {
+
+    
+}
+
 const colorTexel = (buffer, offset, phase) => {
 
     const r = parseInt((Math.cos(phase) + 1) * .5 * 255)

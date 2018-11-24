@@ -1,3 +1,5 @@
+import * as Helpers from './helpers'
+
 const zoom = (view, fracX, fracY, factor) => {
 
     fracX -= 0.5
@@ -37,13 +39,11 @@ const translate = (view, fracX, fracY) => {
     }
 }
 
-const lerp = (a, b, t) => ((b - a) * t + a)
-
 const interpolate = (fromDomain, toDomain, frac) => {
 
-    const x = lerp(fromDomain.x, toDomain.x, frac)
-    const y = lerp(fromDomain.y, toDomain.y, frac)
-    const zoom = lerp(fromDomain.zoom, toDomain.zoom, frac)
+    const x = Helpers.lerp(fromDomain.x, toDomain.x, frac)
+    const y = Helpers.lerp(fromDomain.y, toDomain.y, frac)
+    const zoom = Helpers.lerp(fromDomain.zoom, toDomain.zoom, frac)
 
     return {
         x,

@@ -9,8 +9,8 @@ export default {
     ui: {
 
     },
-    resolution: 0.3,
-    iterations: 75,
+    resolution: 0.5,
+    iterations: 125,
     webgl: !false,
     animate: false,
 

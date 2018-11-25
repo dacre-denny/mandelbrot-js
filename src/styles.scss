@@ -13,6 +13,15 @@
             user-select: none; 
 }
 
+@mixin userinteract_enabled {
+    outline: none;
+    cursor: pointer;     
+    
+    &:hover {
+        opacity: 0.7; 
+    } 
+}
+
 $color-primary-text: #ffeb00;
 $color-light-text: #eee;
 $color-dark-text: #4c4c4c;
@@ -94,12 +103,7 @@ label {
 }
 
 input {
-    outline: none;
-    cursor: pointer;
 
-    &:hover {
-        opacity: 0.7;
-    } 
 
     &[type=range] { 
         margin:0;
@@ -134,8 +138,34 @@ input {
         background: $color-primary-text;
         color:$color-dark-text;
     }
+
+    @include userinteract_enabled();
 }  
 
-img {
-    display:block;
+nav {
+    position: fixed;
+    bottom:$spacing;
+    right:$spacing;
+    left:$spacing;
+    z-index: 1;
+    text-align: center;
+    
+    button {
+        
+        padding:0;
+        border: none;
+        display:inline-block;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 $spacing * 0.5;
+        border:0.2rem solid $color-dark-background;
+
+        img {
+            width:5rem;
+            height:5rem;
+            display:block; 
+        }
+
+        @include userinteract_enabled();
+    }
 }

@@ -173,6 +173,10 @@ const onToggleMode = () => {
 
 const createImage = (id, width, height, view) => {
 
+    const button = document.querySelector(id)
+
+    if (!button) return
+
     const canvas = document.createElement('canvas')
 
     document.body.appendChild(canvas)
@@ -181,7 +185,7 @@ const createImage = (id, width, height, view) => {
     canvas.height = height
     Canvas.renderFrame(context, Object.assign({}, state, { view }))
 
-    const img = document.querySelector(id)
+    const img = button.querySelector('img')
     img.src = context.canvas.toDataURL()
 
     canvas.remove()

@@ -128,6 +128,7 @@ const onRenderFrame = () => {
     if (state.animate) {
         state.time = (Date.now() / 1000.0) % 1000
     }
+
 }
 
 const onReset = () => {
@@ -170,6 +171,22 @@ const onToggleMode = () => {
     loadCanvas(state.webgl)
 }
 
+const createImage = (id, width, height, view) => {
+
+    const canvas = document.createElement('canvas')
+
+    document.body.appendChild(canvas)
+
+    canvas.width = width
+    canvas.height = height
+    Canvas.renderFrame(context, Object.assign({}, state, { view }))
+
+    const img = document.querySelector(id)
+    img.src = context.canvas.toDataURL()
+
+    canvas.remove()
+}
+
 const onInit = () => {
 
     UI.createButton('reset', onReset)
@@ -182,6 +199,20 @@ const onInit = () => {
     UI.createSlider('divergence', state.divergence, onChangeDivergence)
 
     loadCanvas(state.webgl)
+
+    createImage('#dest0', 150, 150, {
+        x: -0.8036284402834375, y: 0.18252764009245603, zoom: 0.0017168874184687476
+    })
+    createImage('#dest1', 150, 150, {
+        x: -1.195852878464819, y: -0.31260127931769716, zoom: 0.02999999999999997
+    })
+    createImage('#dest2', 150, 150, {
+        x: 0.28773359691377504, y: 0.011569467738227467, zoom: 0.0010047419752590714
+    })
+    createImage('#dest3', 150, 150, {
+        x: -0.5658287599483223, y: 0.5653723561505654, zoom: 0.057453340757295884
+    })
+
 
     const onRequestAnimationFrame = () => {
 

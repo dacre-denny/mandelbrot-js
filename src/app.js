@@ -19,7 +19,7 @@ const cursorFracY = (event) => {
 
 const animateToView = (viewEnd, callback) => {
 
-    const SPEED = 0.01
+    const DURATION = 0.5
     const viewStart = Object.assign({}, state.view)
 
     if (state.flying) {
@@ -28,20 +28,20 @@ const animateToView = (viewEnd, callback) => {
         state.flying = undefined
     }
 
-    const iteration = (time) => {
+    const iteration = (startTime) => {
 
-        const nextTime = Math.min(1.0, time + SPEED)
-        const frac = Helpers.easeInOutCubic(nextTime)
+        const time = Math.min((Date.now() - startTime) / 1000, DURATION)
+        const frac = Helpers.easeInOutCubic(time, DURATION)
 
         state.view = View.interpolate(viewStart, viewEnd, frac)
-        state.flying = time < 1.0 ? setTimeout(iteration, 10, nextTime) : undefined
+        state.flying = time < DURATION ? setTimeout(iteration, 10, startTime) : undefined
 
         if (!state.flying && callback) {
             callback()
         }
     }
 
-    state.flying = setTimeout(iteration, 0, 0)
+    state.flying = setTimeout(iteration, 0, Date.now())
 }
 
 const loadCanvas = (isWebGL) => {

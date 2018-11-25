@@ -167,6 +167,7 @@ nav {
         }
 
         @include userinteract_enabled();
-        @include userselect_none();
     }
+    
+    @include userselect_none();
 }

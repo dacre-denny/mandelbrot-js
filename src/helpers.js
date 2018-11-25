@@ -27,17 +27,16 @@ export const easeOutCubic = (time) => {
     return (time * time * time + 1)
 }
 
-export const easeInOutCubic = (time) => {
+export const easeInOutCubic = (time, duration) => {
 
-    const d = 1
     const c = 1
 
-    time /= d / 2;
+    time /= duration / 2;
 
     if (time < 1) return c / 2 * time * time * time;
 
     time -= 2;
-    
+
     return c / 2 * (time * time * time + 2);
 }
 

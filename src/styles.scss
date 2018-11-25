@@ -52,7 +52,7 @@ form {
     right:$spacing;
     z-index: 1;
     background:$color-dark-background; 
-    border-radius: $border-radius;
+    border-radius: $border-radius * 2.0;
     padding:$spacing * 0.5;  
     text-align: center;
     
@@ -167,5 +167,6 @@ nav {
         }
 
         @include userinteract_enabled();
+        @include userselect_none();
     }
 }

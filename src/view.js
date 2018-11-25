@@ -74,3 +74,10 @@ export const identity = () => {
         zoom: 3
     }
 }
+
+export const isIdentity = (view) => {
+
+    const i = identity()
+
+    return (view.x === i.x && view.y === i.y && view.zoom === i.zoom)
+}

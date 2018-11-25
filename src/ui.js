@@ -46,3 +46,22 @@ export const createButton = (id, onClick) => {
 
     element.addEventListener('click', onClick)
 }
+
+export const createCanvasImage = (selector, renderCallback) => {
+
+    const img = document.body.querySelector(selector)
+
+    if (!img) return
+
+    const canvas = document.createElement('canvas')
+    canvas.width = 150
+    canvas.height = 150
+
+    const context = canvas.getContext('2d')
+
+    renderCallback(context)
+
+    img.src = context.canvas.toDataURL()
+
+    canvas.remove()
+}

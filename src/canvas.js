@@ -9,14 +9,14 @@ const shadeTexel = (buffer, index, phase) => {
     buffer[index + 3] = 255
 }
 
-export const generateMandelbrot = (buffer, width, height, state) => {
+export const generateMandelbrot = (buffer, width, height, state, aspectRatio) => {
 
     const view = state.view
     const phase = state.time
     const iterations = state.iterations
     const divergence = state.divergence
 
-    const domainWidth = Domain.zoomWidth(view)
+    const domainWidth = Domain.zoomWidth(view) * aspectRatio
     const domainHeight = Domain.zoomHeight(view)
 
     const domainLeft = view.x - domainWidth * 0.5
@@ -58,11 +58,11 @@ export const generateMandelbrot = (buffer, width, height, state) => {
 }
 
 export const createContext = (canvas) => {
-    
+
     return canvas.getContext('2d')
 }
 
-export const renderFrame = (context, state) => {
+export const renderFrame = (context, state, aspectRatio) => {
 
     const width = context.canvas.width
     const height = context.canvas.height
@@ -72,7 +72,7 @@ export const renderFrame = (context, state) => {
 
     const imageData = context.getImageData(0, 0, width, height)
 
-    generateMandelbrot(imageData.data, width, height, state)
+    generateMandelbrot(imageData.data, width, height, state, aspectRatio)
 
     context.putImageData(imageData, 0, 0)
 }

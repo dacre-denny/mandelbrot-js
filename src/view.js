@@ -1,16 +1,16 @@
 import * as Helpers from './helpers'
 
-export const zoom = (view, fracX, fracY, factor) => {
+export const zoom = (view, fracX, fracY, factor, aspectRatio) => {
 
     fracX -= 0.5
     fracY -= 0.5
 
-    const mapWidth = zoomWidth(view)
+    const mapWidth = zoomWidth(view) * aspectRatio
     const mapHeight = zoomHeight(view)
 
     const newZoom = view.zoom * factor
 
-    const newMapWidth = newZoom * aspectRatio()
+    const newMapWidth = newZoom * aspectRatio
     const newMapHeight = newZoom
 
     const x = view.x - (fracX * (newMapWidth - mapWidth))
@@ -24,9 +24,9 @@ export const zoom = (view, fracX, fracY, factor) => {
     }
 }
 
-export const translate = (view, fracX, fracY) => {
+export const translate = (view, fracX, fracY, aspectRatio) => {
 
-    const dw = zoomWidth(view)
+    const dw = zoomWidth(view) * aspectRatio
     const dh = zoomHeight(view)
 
     const x = view.x + fracX * dw
@@ -59,7 +59,7 @@ export const aspectRatio = () => {
 
 export const zoomWidth = (view) => {
 
-    return view.zoom * aspectRatio()
+    return view.zoom
 }
 
 export const zoomHeight = (view) => {

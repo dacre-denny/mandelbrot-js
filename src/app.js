@@ -62,14 +62,12 @@ const loadCanvas = (isWebGL) => {
     if (isWebGL) {
         try {
             context = WebGL.createContext(canvas, state.iterations)
-        }
-        catch (err) {
+        } catch (err) {
             console.error(err)
             state.webgl = false
             context = canvas.getContext('2d')
         }
-    }
-    else {
+    } else {
 
         context = Canvas.createContext(canvas)
     }
@@ -84,7 +82,7 @@ const onCanvasMouseMove = (event) => {
         const dx = -event.movementX / document.body.clientWidth
         const dy = -event.movementY / document.body.clientHeight
 
-        state.view = View.translate(state.view, dx, dy)
+        state.view = View.translate(state.view, dx, dy, View.aspectRatio())
     }
 }
 
@@ -94,7 +92,7 @@ const onCanvasMouseWheel = (event) => {
     const y = cursorFracY(event)
     const scale = event.wheelDeltaY > 0 ? 0.75 : 1.25
 
-    animateToView(View.zoom(state.view, x, y, scale))
+    animateToView(View.zoom(state.view, x, y, scale, View.aspectRatio()))
 }
 
 const onCanvasDoubleClick = (event) => {
@@ -103,7 +101,7 @@ const onCanvasDoubleClick = (event) => {
     const y = cursorFracY(event)
     const scale = 0.1
 
-    animateToView(View.zoom(state.view, x, y, scale))
+    animateToView(View.zoom(state.view, x, y, scale, View.aspectRatio()))
 }
 
 const onRenderFrame = () => {
@@ -123,9 +121,8 @@ const onRenderFrame = () => {
 
     if (state.webgl) {
         WebGL.renderFrame(context, state, View.aspectRatio())
-    }
-    else {
-        Canvas.renderFrame(context, state)
+    } else {
+        Canvas.renderFrame(context, state, View.aspectRatio())
     }
 
     if (state.animate) {
@@ -178,15 +175,16 @@ const createImage = (id, view) => {
 
     UI.createCanvasImage(`#${id} img`, context => {
 
-        Canvas.renderFrame(context, Object.assign({}, state, { view }))
+        Canvas.renderFrame(context, Object.assign({}, state, {
+            view
+        }), 1)
     })
 
     UI.createButton(id, () => {
 
         if (View.isIdentity(state.view)) {
             animateToView(view)
-        }
-        else {
+        } else {
             animateToView(View.identity(), () => animateToView(view))
         }
 

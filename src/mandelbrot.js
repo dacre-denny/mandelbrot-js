@@ -1,6 +1,4 @@
-import * as Domain from './view'
 import * as Helpers from './helpers'
-
 
 const colorTexel = (buffer, offset, phase) => {
 
@@ -56,4 +54,3 @@ export default (buffer, width, height, phase, iterations, view) => {
 
     return buffer
 }
-

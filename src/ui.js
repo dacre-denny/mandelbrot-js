@@ -1,67 +1,60 @@
 export const createSlider = (id, value, onChange) => {
+  const element = document.getElementById(id)
 
-    const element = document.getElementById(id)
+  if (!element) return
 
-    if (!element) return
+  const updateValueDisplay = (text) => {
+    element.parentElement.querySelector('span').innerText = text
+  }
 
-    const updateValueDisplay = (text) => {
+  element.value = value
 
-        element.parentElement.querySelector('span').innerText = text
-    }
+  element.addEventListener('change', (event) => {
+    updateValueDisplay(event.currentTarget.value)
 
-    element.value = value
+    onChange(event)
+  })
 
-    element.addEventListener('change', (event) => {
-
-        updateValueDisplay(event.currentTarget.value)
-
-        onChange(event)
-    })
-
-    updateValueDisplay(value)
+  updateValueDisplay(value)
 }
 
 export const createToggle = (id, value, onToggle) => {
+  const element = document.getElementById(id)
 
-    const element = document.getElementById(id)
+  if (!element) return
 
-    if (!element) return
+  element.classList.toggle('toggled', value)
 
+  element.addEventListener('click', (event) => {
+    value = !value
     element.classList.toggle('toggled', value)
 
-    element.addEventListener('click', (event) => {
-
-        value = !value
-        element.classList.toggle('toggled', value)
-
-        onToggle(event)
-    })
+    onToggle(event)
+  })
 }
 
 export const createButton = (id, onClick) => {
+  const element = document.getElementById(id)
 
-    const element = document.getElementById(id)
+  if (!element) return
 
-    if (!element) return
-
-    element.addEventListener('click', onClick)
+  element.addEventListener('click', onClick)
 }
 
 export const createCanvasImage = (selector, renderCallback) => {
+  const img = document.body.querySelector(selector)
 
-    const img = document.body.querySelector(selector)
+  if (!img) return
 
-    if (!img) return
+  const canvas = document.createElement('canvas')
+  canvas.width = 150
+  canvas.height = 150
 
-    const canvas = document.createElement('canvas')
-    canvas.width = 150
-    canvas.height = 150
+  const context = canvas.getContext('2d')
 
-    const context = canvas.getContext('2d')
+  renderCallback(context)
 
-    renderCallback(context)
+  img.src = context.canvas.toDataURL()
 
-    img.src = context.canvas.toDataURL()
-
-    canvas.remove()
+  canvas.remove()
 }

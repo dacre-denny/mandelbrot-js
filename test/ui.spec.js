@@ -50,7 +50,8 @@ describe("createSlider", function() {
     });
 
     it("should add change event handler", function() {
-      document.body.appendChild(createRangeInput("bar"));
+      const range = createRangeInput("bar");
+      document.body.appendChild(range);
 
       assert.isUndefined(
         UI.createSlider("bar", 4, event => {

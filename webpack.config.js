@@ -1,21 +1,19 @@
-var path = require('path');
-var webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
-    app: './index.js'
+    app: "./index.js"
   },
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   output: {
     path: __dirname,
-    filename: 'bundle.js'
+    filename: "bundle.js"
   },
   module: {
     rules: [
       {
         test: /.js?$/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
         exclude: /node_modules/
       },
       {
@@ -30,11 +28,11 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'mandelbrot',
-      template: 'src/index.html'
+      title: "mandelbrot",
+      template: "src/index.html"
     })
   ],
   resolve: {
-    extensions: ['.js', '.html']
+    extensions: [".js", ".html"]
   }
 };

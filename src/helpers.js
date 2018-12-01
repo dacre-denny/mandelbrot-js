@@ -13,7 +13,7 @@ const precomputeCycleIfNeeded = () => {
 };
 
 export const lerp = (a, b, time) => {
-  return (b - a) * time + a;
+  return (b - a) * time + parseFloat(a, 10);
 };
 
 export const easeOutCubic = time => {
@@ -38,7 +38,7 @@ export const sin = phase => {
   precomputeCycleIfNeeded();
 
   const sineLookup =
-    parseInt((phase * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI)) %
+    parseInt((phase * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI), 10) %
     PRECOMPUTATION_ITERATIONS;
 
   return precomputedCycle[sineLookup];
@@ -49,7 +49,8 @@ export const cos = phase => {
 
   const cosineLoopup =
     parseInt(
-      ((phase + Math.PI * 0.5) * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI)
+      ((phase + Math.PI * 0.5) * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI),
+      10
     ) % PRECOMPUTATION_ITERATIONS;
 
   return precomputedCycle[cosineLoopup];

@@ -40,32 +40,6 @@ const animateToView = (viewEnd, callback) => {
   state.flying = setTimeout(iteration, 0, Date.now());
 };
 
-const loadCanvas = isWebGL => {
-  for (const node of document.body.querySelectorAll("canvas")) {
-    node.remove();
-  }
-
-  const canvas = document.createElement("canvas");
-  canvas.addEventListener("mousemove", onCanvasMouseMove);
-  canvas.addEventListener("mousewheel", onCanvasMouseWheel);
-  canvas.addEventListener("dblclick", onCanvasDoubleClick);
-  canvas.addEventListener("contextmenu", event => event.preventDefault());
-
-  document.body.appendChild(canvas);
-
-  if (isWebGL) {
-    try {
-      context = WebGL.createContext(canvas, state.iterations);
-    } catch (err) {
-      console.error(err);
-      state.webgl = false;
-      context = canvas.getContext("2d");
-    }
-  } else {
-    context = Canvas.createContext(canvas);
-  }
-};
-
 const onCanvasMouseMove = event => {
   if (event.buttons > 0) {
     const dx = -event.movementX / document.body.clientWidth;
@@ -93,7 +67,6 @@ const onCanvasDoubleClick = event => {
 
 const onRenderFrame = () => {
   const canvas = document.querySelector("canvas");
-
   const width = parseInt(document.body.clientWidth * state.resolution);
   const height = parseInt(document.body.clientHeight * state.resolution);
 
@@ -104,7 +77,6 @@ const onRenderFrame = () => {
   if (canvas.height !== height) {
     canvas.height = height;
   }
-
   if (state.webgl) {
     WebGL.renderFrame(context, state, View.aspectRatio());
   } else {
@@ -209,6 +181,32 @@ const onInit = () => {
   };
 
   onRequestAnimationFrame();
+};
+
+const loadCanvas = isWebGL => {
+  for (const node of document.body.querySelectorAll("canvas")) {
+    node.remove();
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.addEventListener("mousemove", onCanvasMouseMove);
+  canvas.addEventListener("mousewheel", onCanvasMouseWheel);
+  canvas.addEventListener("dblclick", onCanvasDoubleClick);
+  canvas.addEventListener("contextmenu", event => event.preventDefault());
+
+  document.body.appendChild(canvas);
+
+  if (isWebGL) {
+    try {
+      context = WebGL.createContext(canvas, state.iterations);
+    } catch (err) {
+      console.error(err);
+      state.webgl = false;
+      context = canvas.getContext("2d");
+    }
+  } else {
+    context = Canvas.createContext(canvas);
+  }
 };
 
 export default {

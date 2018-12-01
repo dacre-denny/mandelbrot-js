@@ -9,7 +9,31 @@ const {
 } = jsdom;
 
 
+const createRangeInput = (id) => {
+
+  const div = document.createElement(`div`)
+
+  div.innerHTML = `
+  <label>Bar</label>
+  <span></span>
+  <input type="range" min="1" max="500" step="1" id="${ id }" />
+  `
+  return div
+}
+
 describe('createSlider', function () {
+
+  beforeEach(function () {
+
+    global.window = new JSDOM().window
+    global.document = window.document
+  })
+
+  afterEach(function () {
+
+    global.window = undefined
+    global.document = undefined
+  })
 
   describe('behaviour when invalid id passed', function () {
 
@@ -20,17 +44,7 @@ describe('createSlider', function () {
 
     it('should do nothing when no matching element found for id', function () {
 
-      const document = new JSDOM().window.document
-      const div = document.createElement(`div`)
-
-      document.body.appendChild(div)
-      global.document = document
-
-      div.innerHTML = `
-    <label>Bar</label>
-    <span></span>
-    <input type="range" min="1" max="500" step="1" id="bar" />
-    `
+      document.body.appendChild(createRangeInput('bar'))
 
       UI.createSlider('foo')
     });
@@ -41,17 +55,7 @@ describe('createSlider', function () {
 
     it('should initialize range input with value', function () {
 
-      const document = new JSDOM().window.document
-      const div = document.createElement(`div`)
-
-      document.body.appendChild(div)
-      global.document = document
-
-      div.innerHTML = `
-      <label>Bar</label>
-      <span></span>
-      <input type="range" min="1" max="500" step="1" id="bar" />
-      `
+      document.body.appendChild(createRangeInput('bar'))
 
       assert.isUndefined(UI.createSlider('bar', 4))
 
@@ -60,20 +64,7 @@ describe('createSlider', function () {
 
     it('should add change event handler', function () {
 
-      const window = new JSDOM().window
-      const document = window.document
-      const div = document.createElement(`div`)
-
-      document.body.appendChild(div)
-      global.document = document
-
-      div.innerHTML = `
-      <label>Bar</label>
-      <span></span>
-      <input type="range" min="1" max="500" step="1" id="bar" />
-      `
-      const range = document.getElementById('bar')
-      range.value = 5
+      document.body.appendChild(createRangeInput('bar'))
 
       assert.isUndefined(UI.createSlider('bar', 4, event => {
 
@@ -82,6 +73,7 @@ describe('createSlider', function () {
         assert.equal(event.currentTarget.value, 5)
       }))
 
+      range.value = 5
       range.dispatchEvent(new window.Event('change'))
     });
   });

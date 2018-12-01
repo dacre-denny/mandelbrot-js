@@ -60,7 +60,8 @@ describe('createSlider', function () {
 
     it('should add change event handler', function () {
 
-      const document = new JSDOM().window.document
+      const window = new JSDOM().window
+      const document = window.document
       const div = document.createElement(`div`)
 
       document.body.appendChild(div)
@@ -71,15 +72,17 @@ describe('createSlider', function () {
       <span></span>
       <input type="range" min="1" max="500" step="1" id="bar" />
       `
+      const range = document.getElementById('bar')
+      range.value = 5
 
       assert.isUndefined(UI.createSlider('bar', 4, event => {
 
+        assert.isDefined(event)
+        assert.isDefined(event.currentTarget)
+        assert.equal(event.currentTarget.value, 5)
       }))
 
-      const event = new Event('change');
-      document.getElementById('bar').dispatchEvent(event)
-
-      assert.equal(document.getElementById('bar').value, 4)
+      range.dispatchEvent(new window.Event('change'))
     });
   });
 });

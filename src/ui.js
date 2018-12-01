@@ -4,7 +4,10 @@ export const createSlider = (id, value, onChange) => {
   if (!element) return;
 
   const updateValueDisplay = text => {
-    element.parentElement.querySelector("span").innerText = text;
+    const span = element.parentElement.querySelector("span");
+    if (span) {
+      span.innerText = text;
+    }
   };
 
   element.value = value;
@@ -12,7 +15,9 @@ export const createSlider = (id, value, onChange) => {
   element.addEventListener("change", event => {
     updateValueDisplay(event.currentTarget.value);
 
-    onChange(event);
+    if (onChange) {
+      onChange(event);
+    }
   });
 
   updateValueDisplay(value);

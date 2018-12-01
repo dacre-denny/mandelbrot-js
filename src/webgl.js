@@ -1,52 +1,47 @@
-let quadBuffer = null
-let mandelbrotProgram = null
+let quadBuffer = null;
+let mandelbrotProgram = null;
 
 export const createContext = (canvas, iterations) => {
+  var gl = canvas.getContext("webgl");
 
-    var gl = canvas.getContext('webgl')
+  quadBuffer = createQuadBuffer(gl);
 
-    quadBuffer = createQuadBuffer(gl)
+  mandelbrotProgram = createMandelbrotProgram(gl, iterations);
 
-    mandelbrotProgram = createMandelbrotProgram(gl, iterations)
+  return gl;
+};
 
-    return gl
-}
+const createQuadBuffer = gl => {
+  const positionBuffer = gl.createBuffer();
 
-const createQuadBuffer = (gl) => {
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-    const positionBuffer = gl.createBuffer();
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0]),
+    gl.STATIC_DRAW
+  );
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-        -1.0, 1.0,
-        1.0, 1.0,
-        -1.0, -1.0,
-        1.0, -1.0,
-    ]), gl.STATIC_DRAW);
-
-    return positionBuffer
-}
+  return positionBuffer;
+};
 
 const createShader = (gl, type, source) => {
-    const shader = gl.createShader(type);
+  const shader = gl.createShader(type);
 
-    gl.shaderSource(shader, source);
+  gl.shaderSource(shader, source);
 
-    gl.compileShader(shader);
+  gl.compileShader(shader);
 
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        gl.deleteShader(shader);
-        return null;
-    }
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    gl.deleteShader(shader);
+    return null;
+  }
 
-    return shader;
-}
+  return shader;
+};
 
 const createMandelbrotProgram = (gl, iterations) => {
-
-    const vertexSrc =
-        `
+  const vertexSrc = `
 precision highp float;
 
 attribute vec2 vertexPosition;
@@ -61,9 +56,8 @@ void main() {
     vUV = vec2(x, -y) * 0.5 + vec2(0.5, 0.5);
     gl_Position =  vec4(vertexPosition.xy, 0.0, 1.0);
 }
-`
-    const fragmentSrc =
-        `
+`;
+  const fragmentSrc = `
 precision highp float;
 
 uniform vec4 view;
@@ -71,7 +65,7 @@ uniform vec2 screen;
 uniform float phase;
 varying vec2 vUV;  
 
-#define ITERATIONS ${ iterations.toFixed(2)}
+#define ITERATIONS ${iterations.toFixed(2)}
 
 vec4 getColor(float t) {
     
@@ -122,68 +116,68 @@ void main() {
 
     gl_FragColor = color;
 }
-`
+`;
 
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSrc);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
+  const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSrc);
+  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
 
-    const shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
-    gl.linkProgram(shaderProgram);
+  const shaderProgram = gl.createProgram();
+  gl.attachShader(shaderProgram, vertexShader);
+  gl.attachShader(shaderProgram, fragmentShader);
+  gl.linkProgram(shaderProgram);
 
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        return;
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    return;
+  }
+
+  return {
+    program: shaderProgram,
+    attribLocations: {
+      vertexPosition: gl.getAttribLocation(shaderProgram, "vertexPosition")
+    },
+    uniformLocations: {
+      view: gl.getUniformLocation(shaderProgram, "view"),
+      screen: gl.getUniformLocation(shaderProgram, "screen"),
+      phase: gl.getUniformLocation(shaderProgram, "phase")
     }
-
-    return {
-        program: shaderProgram,
-        attribLocations: {
-            vertexPosition: gl.getAttribLocation(shaderProgram, 'vertexPosition'),
-        },
-        uniformLocations: {
-            view: gl.getUniformLocation(shaderProgram, 'view'),
-            screen: gl.getUniformLocation(shaderProgram, 'screen'),
-            phase: gl.getUniformLocation(shaderProgram, 'phase'),
-        }
-    };
-}
+  };
+};
 
 const bindMandelbrotProgram = (gl, state, aspectRatio) => {
+  gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+  gl.vertexAttribPointer(
+    mandelbrotProgram.attribLocations.vertexPosition,
+    2,
+    gl.FLOAT,
+    false,
+    0,
+    0
+  );
+  gl.enableVertexAttribArray(mandelbrotProgram.attribLocations.vertexPosition);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
-    gl.vertexAttribPointer(
-        mandelbrotProgram.attribLocations.vertexPosition,
-        2,
-        gl.FLOAT,
-        false,
-        0,
-        0);
-    gl.enableVertexAttribArray(
-        mandelbrotProgram.attribLocations.vertexPosition);
+  gl.useProgram(mandelbrotProgram.program);
 
-    gl.useProgram(mandelbrotProgram.program);
+  gl.uniform4fv(mandelbrotProgram.uniformLocations.view, [
+    state.view.x,
+    state.view.y,
+    state.view.zoom,
+    aspectRatio
+  ]);
 
-    gl.uniform4fv(
-        mandelbrotProgram.uniformLocations.view,
-        [state.view.x, state.view.y, state.view.zoom, aspectRatio]);
+  gl.uniform2fv(mandelbrotProgram.uniformLocations.screen, [
+    gl.canvas.width,
+    gl.canvas.height
+  ]);
 
-    gl.uniform2fv(
-        mandelbrotProgram.uniformLocations.screen,
-        [gl.canvas.width, gl.canvas.height]);
-
-    gl.uniform1f(
-        mandelbrotProgram.uniformLocations.phase,
-        state.time);
-}
+  gl.uniform1f(mandelbrotProgram.uniformLocations.phase, state.time);
+};
 
 export const renderFrame = (gl, state, aspectRatio) => {
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+  gl.clearColor(1.0, 1.0, 0.0, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
 
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
-    gl.clearColor(1.0, 1.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+  bindMandelbrotProgram(gl, state, aspectRatio);
 
-    bindMandelbrotProgram(gl, state, aspectRatio)
-
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-}
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+};

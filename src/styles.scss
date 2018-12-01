@@ -1,25 +1,25 @@
-@mixin fontface($fontsize:0.7rem) {
-    font-size: $fontsize;
-    font-weight: bold;
-    text-transform: uppercase; 
+@mixin fontface($fontsize: 0.7rem) {
+  font-size: $fontsize;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 @mixin userselect_none {
-    -webkit-touch-callout: none; 
-    -webkit-user-select: none; 
-     -khtml-user-select: none; 
-       -moz-user-select: none; 
-        -ms-user-select: none; 
-            user-select: none; 
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 @mixin userinteract_enabled {
-    outline: none;
-    cursor: pointer;     
-    
-    &:hover {
-        opacity: 0.7; 
-    } 
+  outline: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
 $color-primary-text: #ffeb00;
@@ -30,144 +30,141 @@ $color-dark-background: #151515;
 $spacing: 1rem;
 $border-radius: 0.1rem;
 
-body {  
-    width:100vw;
-    height:100vh;
-    position: fixed;
-    font-family: Arial, Helvetica, sans-serif;
+body {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 canvas {
-    width:100vw;
-    height:100vh;
-    display: block;
-    position: fixed;
-    top:0;
-    left:0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 form {
-    position: fixed;
-    top:$spacing;
-    right:$spacing;
-    z-index: 1;
-    background:$color-dark-background; 
-    border-radius: $border-radius * 2.0;
-    padding:$spacing * 0.5;  
-    text-align: center;
-    
-    @include userselect_none();
-    
-    div {        
-        margin-top: $spacing;
-        margin-bottom: $spacing*0.5;
-        position: relative;
-    } 
+  position: fixed;
+  top: $spacing;
+  right: $spacing;
+  z-index: 1;
+  background: $color-dark-background;
+  border-radius: $border-radius * 2;
+  padding: $spacing * 0.5;
+  text-align: center;
+
+  @include userselect_none();
+
+  div {
+    margin-top: $spacing;
+    margin-bottom: $spacing * 0.5;
+    position: relative;
+  }
 }
 
-h1 { 
-    font-size: 1rem;
-    color:$color-light-text;
+h1 {
+  font-size: 1rem;
+  color: $color-light-text;
 
-    @include fontface();
+  @include fontface();
 }
 
-a { 
-    color:$color-dark-text;
-    margin: 0 0.25rem;
-    text-decoration: none;
+a {
+  color: $color-dark-text;
+  margin: 0 0.25rem;
+  text-decoration: none;
 
-    &:hover {
-        text-decoration: underline;
-    }
-    
-    @include fontface(0.55rem);
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include fontface(0.55rem);
 }
 
 label {
-    color:$color-dark-text;
-    display: block;
-    margin-bottom: $spacing*0.5;
-    text-align: left;
+  color: $color-dark-text;
+  display: block;
+  margin-bottom: $spacing * 0.5;
+  text-align: left;
 
-    @include fontface(0.55rem);
+  @include fontface(0.55rem);
 
-    + span {
-        position: absolute;
-        top:0;
-        right:0;
-        font-size: 0.65rem;
-        font-weight: bold;
-        color:$color-light-text;
-    }
+  + span {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: $color-light-text;
+  }
 }
 
 input {
+  &[type="range"] {
+    margin: 0;
+    width: 100%;
+    -webkit-appearance: none;
 
-
-    &[type=range] { 
-        margin:0;
-        width:100%;
-        -webkit-appearance: none;
-
-        &::-webkit-slider-thumb {
-            -webkit-appearance: none; 
-            height: $spacing;
-            width: $spacing * 0.75;
-            background: $color-primary-text;
-            border-radius: $border-radius;
-        } 
-
-        &::-webkit-slider-runnable-track {  
-            background: darken($color-dark-background, 5%);
-            height:$spacing;
-        }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: $spacing;
+      width: $spacing * 0.75;
+      background: $color-primary-text;
+      border-radius: $border-radius;
     }
 
-    &[type="button"] { 
-        border-radius: $border-radius;
-        background: lighten($color-dark-background, 5%);
-        color:$color-light-text;
-        padding:0.25rem 1rem;
-        border:none;  
-
-        @include fontface();
+    &::-webkit-slider-runnable-track {
+      background: darken($color-dark-background, 5%);
+      height: $spacing;
     }
+  }
 
-    &.toggled {
-        background: $color-primary-text;
-        color:$color-dark-text;
+  &[type="button"] {
+    border-radius: $border-radius;
+    background: lighten($color-dark-background, 5%);
+    color: $color-light-text;
+    padding: 0.25rem 1rem;
+    border: none;
+
+    @include fontface();
+  }
+
+  &.toggled {
+    background: $color-primary-text;
+    color: $color-dark-text;
+  }
+
+  @include userinteract_enabled();
+}
+
+nav {
+  position: fixed;
+  bottom: $spacing;
+  right: $spacing;
+  left: $spacing;
+  z-index: 1;
+  text-align: center;
+
+  button {
+    padding: 0;
+    border: none;
+    display: inline-block;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 $spacing * 0.5;
+    border: 0.2rem solid $color-dark-background;
+
+    img {
+      width: 5rem;
+      height: 5rem;
+      display: block;
     }
 
     @include userinteract_enabled();
-}  
+  }
 
-nav {
-    position: fixed;
-    bottom:$spacing;
-    right:$spacing;
-    left:$spacing;
-    z-index: 1;
-    text-align: center;
-    
-    button {
-        
-        padding:0;
-        border: none;
-        display:inline-block;
-        border-radius: 50%;
-        overflow: hidden;
-        margin: 0 $spacing * 0.5;
-        border:0.2rem solid $color-dark-background;
-
-        img {
-            width:5rem;
-            height:5rem;
-            display:block; 
-        }
-
-        @include userinteract_enabled();
-    }
-    
-    @include userselect_none();
+  @include userselect_none();
 }

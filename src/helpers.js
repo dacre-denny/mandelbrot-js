@@ -1,59 +1,56 @@
-const PRECOMPUTATION_ITERATIONS = 10000
+const PRECOMPUTATION_ITERATIONS = 10000;
 
-const precomputedCycle = []
+const precomputedCycle = [];
 
 const precomputeCycleIfNeeded = () => {
+  if (precomputedCycle.length === 0) {
+    for (var index = 0; index < PRECOMPUTATION_ITERATIONS; index++) {
+      const theta = 2.0 * Math.PI * (index / PRECOMPUTATION_ITERATIONS);
 
-    if (precomputedCycle.length === 0) {
-
-        for (var index = 0; index < PRECOMPUTATION_ITERATIONS; index++) {
-
-            const theta = 2.0 * Math.PI * (index / PRECOMPUTATION_ITERATIONS)
-
-            precomputedCycle.push(Math.sin(theta))
-        }
+      precomputedCycle.push(Math.sin(theta));
     }
-}
+  }
+};
 
 export const lerp = (a, b, time) => {
+  return (b - a) * time + a;
+};
 
-    return (b - a) * time + a
-}
+export const easeOutCubic = time => {
+  time--;
 
-export const easeOutCubic = (time) => {
-
-    time--;
-
-    return (time * time * time + 1)
-}
+  return time * time * time + 1;
+};
 
 export const easeInOutCubic = (time, duration) => {
+  const c = 1;
 
-    const c = 1
+  time /= duration / 2;
 
-    time /= duration / 2;
+  if (time < 1) return (c / 2) * time * time * time;
 
-    if (time < 1) return c / 2 * time * time * time;
+  time -= 2;
 
-    time -= 2;
+  return (c / 2) * (time * time * time + 2);
+};
 
-    return c / 2 * (time * time * time + 2);
-}
+export const sin = phase => {
+  precomputeCycleIfNeeded();
 
-export const sin = (phase) => {
+  const sineLookup =
+    parseInt((phase * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI)) %
+    PRECOMPUTATION_ITERATIONS;
 
-    precomputeCycleIfNeeded()
+  return precomputedCycle[sineLookup];
+};
 
-    const sineLookup = parseInt((phase * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI)) % PRECOMPUTATION_ITERATIONS
+export const cos = phase => {
+  precomputeCycleIfNeeded();
 
-    return precomputedCycle[sineLookup]
-}
+  const cosineLoopup =
+    parseInt(
+      ((phase + Math.PI * 0.5) * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI)
+    ) % PRECOMPUTATION_ITERATIONS;
 
-export const cos = (phase) => {
-
-    precomputeCycleIfNeeded()
-
-    const cosineLoopup = parseInt(((phase + (Math.PI * 0.5)) * PRECOMPUTATION_ITERATIONS) / (2.0 * Math.PI)) % PRECOMPUTATION_ITERATIONS
-
-    return precomputedCycle[cosineLoopup]
-}
+  return precomputedCycle[cosineLoopup];
+};

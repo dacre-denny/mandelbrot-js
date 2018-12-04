@@ -1,4 +1,4 @@
-//const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -12,27 +12,21 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /.js?$/,
-        loader: "babel-loader",
-        exclude: /node_modules/
+        test: /\.js/,
+        exclude: /node_modules/,
+        use: ["babel-loader"]
       },
       {
         test: /\.scss$/,
-        use: [
-          "style-loader", // creates style nodes from JS strings
-          "css-loader", // translates CSS into CommonJS
-          "sass-loader" // compiles Sass to CSS, using Node Sass by default
-        ]
+        use: ["style-loader", "css-loader", "sass-loader"]
       }
     ]
   },
   plugins: [
-    /*
     new HtmlWebpackPlugin({
       title: "mandelbrot",
       template: "src/index.html"
     })
-*/
   ],
   resolve: {
     extensions: [".js", ".html"]

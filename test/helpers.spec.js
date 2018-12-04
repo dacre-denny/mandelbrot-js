@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { assert } = require("chai");
-const Helpers = require("./src/helpers");
+const Helpers = require("../src/helpers");
 
 describe("helpers module", function() {
   describe("lerp", function() {

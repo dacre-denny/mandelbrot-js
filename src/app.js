@@ -4,6 +4,7 @@ import * as WebGL from "./webgl";
 import * as UI from "./ui";
 import * as Helpers from "./helpers";
 import * as Canvas from "./canvas";
+import "./styles.scss";
 
 let context = null;
 
@@ -208,6 +209,8 @@ const loadCanvas = isWebGL => {
     context = Canvas.createContext(canvas);
   }
 };
+
+onInit();
 
 export default {
   onInit,

@@ -3,8 +3,9 @@ export const createSlider = (id, value, onChange) => {
 
   if (!element) return;
 
-  const updateValueDisplay = text => {
+  const updateValueDisplay = (text) => {
     const span = element.parentElement.querySelector("span");
+
     if (span) {
       span.innerText = text;
     }
@@ -12,7 +13,7 @@ export const createSlider = (id, value, onChange) => {
 
   element.value = value;
 
-  element.addEventListener("change", event => {
+  element.addEventListener("change", (event) => {
     updateValueDisplay(event.currentTarget.value);
 
     if (onChange) {
@@ -30,7 +31,7 @@ export const createToggle = (id, value, onToggle) => {
 
   element.classList.toggle("toggled", value);
 
-  element.addEventListener("click", event => {
+  element.addEventListener("click", (event) => {
     value = !value;
     element.classList.toggle("toggled", value);
 
@@ -52,6 +53,7 @@ export const createCanvasImage = (selector, renderCallback) => {
   if (!img) return;
 
   const canvas = document.createElement("canvas");
+
   canvas.width = 150;
   canvas.height = 150;
 

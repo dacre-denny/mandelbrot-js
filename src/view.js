@@ -53,11 +53,11 @@ export const aspectRatio = () => {
   return document.body.clientWidth / document.body.clientHeight;
 };
 
-export const zoomWidth = view => {
+export const zoomWidth = (view) => {
   return view.zoom;
 };
 
-export const zoomHeight = view => {
+export const zoomHeight = (view) => {
   return view.zoom;
 };
 
@@ -69,7 +69,7 @@ export const identity = () => {
   };
 };
 
-export const isIdentity = view => {
+export const isIdentity = (view) => {
   const i = identity();
 
   return view.x === i.x && view.y === i.y && view.zoom === i.zoom;

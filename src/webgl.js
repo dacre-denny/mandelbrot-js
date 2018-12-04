@@ -11,7 +11,7 @@ export const createContext = (canvas, iterations) => {
   return gl;
 };
 
-const createQuadBuffer = gl => {
+const createQuadBuffer = (gl) => {
   const positionBuffer = gl.createBuffer();
 
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -122,6 +122,7 @@ void main() {
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
 
   const shaderProgram = gl.createProgram();
+
   gl.attachShader(shaderProgram, vertexShader);
   gl.attachShader(shaderProgram, fragmentShader);
   gl.linkProgram(shaderProgram);

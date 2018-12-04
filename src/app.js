@@ -8,11 +8,11 @@ import "./styles.scss";
 
 let context = null;
 
-const cursorFracX = event => {
+const cursorFracX = (event) => {
   return event.clientX / document.body.clientWidth;
 };
 
-const cursorFracY = event => {
+const cursorFracY = (event) => {
   return event.clientY / document.body.clientHeight;
 };
 
@@ -25,7 +25,7 @@ const animateToView = (viewEnd, callback) => {
     state.flying = undefined;
   }
 
-  const iteration = startTime => {
+  const iteration = (startTime) => {
     const time = Math.min((Date.now() - startTime) / 1000, DURATION);
     const frac = Helpers.easeInOutCubic(time, DURATION);
 
@@ -41,7 +41,7 @@ const animateToView = (viewEnd, callback) => {
   state.flying = setTimeout(iteration, 0, Date.now());
 };
 
-const onCanvasMouseMove = event => {
+const onCanvasMouseMove = (event) => {
   if (event.buttons > 0) {
     const dx = -event.movementX / document.body.clientWidth;
     const dy = -event.movementY / document.body.clientHeight;
@@ -50,7 +50,7 @@ const onCanvasMouseMove = event => {
   }
 };
 
-const onCanvasMouseWheel = event => {
+const onCanvasMouseWheel = (event) => {
   const x = cursorFracX(event);
   const y = cursorFracY(event);
   const scale = event.wheelDeltaY > 0 ? 0.75 : 1.25;
@@ -58,7 +58,7 @@ const onCanvasMouseWheel = event => {
   animateToView(View.zoom(state.view, x, y, scale, View.aspectRatio()));
 };
 
-const onCanvasDoubleClick = event => {
+const onCanvasDoubleClick = (event) => {
   const x = cursorFracX(event);
   const y = cursorFracY(event);
   const scale = 0.1;
@@ -85,7 +85,7 @@ const onRenderFrame = () => {
   }
 
   if (state.animate) {
-    state.time = (Date.now() / 1000.0) % 1000;
+    state.time = Date.now() / 1000.0 % 1000;
   }
 };
 
@@ -93,11 +93,11 @@ const onReset = () => {
   animateToView(View.identity());
 };
 
-const onChangeResoultion = event => {
+const onChangeResoultion = (event) => {
   state.resolution = parseFloat(event.currentTarget.value);
 };
 
-const onChangeIterations = event => {
+const onChangeIterations = (event) => {
   state.iterations = parseInt(event.currentTarget.value);
 
   if (state.webgl) {
@@ -105,7 +105,7 @@ const onChangeIterations = event => {
   }
 };
 
-const onChangeDivergence = event => {
+const onChangeDivergence = (event) => {
   state.divergence = parseInt(event.currentTarget.value);
 
   if (state.webgl) {
@@ -124,7 +124,7 @@ const onToggleMode = () => {
 };
 
 const createImage = (id, view) => {
-  UI.createCanvasImage(`#${id} img`, context => {
+  UI.createCanvasImage(`#${id} img`, (context) => {
     Canvas.renderFrame(
       context,
       Object.assign({}, state, {
@@ -184,16 +184,17 @@ const onInit = () => {
   onRequestAnimationFrame();
 };
 
-const loadCanvas = isWebGL => {
+const loadCanvas = (isWebGL) => {
   for (const node of document.body.querySelectorAll("canvas")) {
     node.remove();
   }
 
   const canvas = document.createElement("canvas");
+
   canvas.addEventListener("mousemove", onCanvasMouseMove);
   canvas.addEventListener("mousewheel", onCanvasMouseWheel);
   canvas.addEventListener("dblclick", onCanvasDoubleClick);
-  canvas.addEventListener("contextmenu", event => event.preventDefault());
+  canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
   document.body.appendChild(canvas);
 

@@ -17,7 +17,7 @@ describe("ui module", function() {
   });
 
   describe("createSlider", function() {
-    const createRangeInput = id => {
+    const createRangeInput = (id) => {
       const div = document.createElement("div");
 
       div.innerHTML = `
@@ -44,6 +44,7 @@ describe("ui module", function() {
     describe("behaviour when id matches element in document", function() {
       it("should initialize range input with value", function() {
         const range = createRangeInput("bar");
+
         document.body.appendChild(range);
 
         UI.createSlider("bar", 4);
@@ -54,6 +55,7 @@ describe("ui module", function() {
 
       it("should initialize range input with value if no span present", function() {
         const range = createRangeInput("bar");
+
         range.querySelector("span").remove();
         document.body.appendChild(range);
 
@@ -64,9 +66,10 @@ describe("ui module", function() {
 
       it("should add change event handler", function() {
         const range = createRangeInput("bar");
+
         document.body.appendChild(range);
 
-        UI.createSlider("bar", 4, event => {
+        UI.createSlider("bar", 4, (event) => {
           assert.equal(event.currentTarget.value, 5);
         });
 
@@ -78,6 +81,7 @@ describe("ui module", function() {
 
       it("should add change value display if no event handler provided", function() {
         const range = createRangeInput("bar");
+
         document.body.appendChild(range);
 
         UI.createSlider("bar", 4);
@@ -93,6 +97,7 @@ describe("ui module", function() {
   describe("createToggle", function() {
     const createToggle = (id, value) => {
       const input = document.createElement("input");
+
       input.setAttribute("type", "button");
       input.setAttribute("id", id);
       input.setAttribute("value", value);

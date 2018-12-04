@@ -37,6 +37,7 @@ export default (buffer, width, height, phase, iterations, view) => {
 
         if (Math.abs(zN - z) > 5) {
           const off = (j * width + k) * 4;
+
           colorTexel(buffer, off, i * 10 + phase);
           break;
         }

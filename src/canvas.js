@@ -45,6 +45,7 @@ export const generateMandelbrot = (
 
         if (Math.abs(zN - z) > divergence) {
           const off = (j * width + k) * 4;
+
           shadeTexel(buffer, off, i * 10 + phase);
           break;
         }
@@ -59,7 +60,7 @@ export const generateMandelbrot = (
   return buffer;
 };
 
-export const createContext = canvas => {
+export const createContext = (canvas) => {
   return canvas.getContext("2d");
 };
 

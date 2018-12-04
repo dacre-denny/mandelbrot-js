@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import { assert } from "chai";
-import * as UI from "../src/ui";
+const { assert } = require("chai");
+const UI = require("../src/ui");
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;

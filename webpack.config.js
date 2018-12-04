@@ -1,4 +1,4 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+//const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -27,10 +27,12 @@ module.exports = {
     ]
   },
   plugins: [
+    /*
     new HtmlWebpackPlugin({
       title: "mandelbrot",
       template: "src/index.html"
     })
+*/
   ],
   resolve: {
     extensions: [".js", ".html"]
